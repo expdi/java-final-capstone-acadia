@@ -6,7 +6,11 @@ import lombok.*;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +43,7 @@ public class Track {
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private List<Artist> artists;
+    private Set<Artist> artists = new HashSet<>();
 
 
     @Column(name="price")
