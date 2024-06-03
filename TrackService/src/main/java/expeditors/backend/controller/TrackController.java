@@ -24,18 +24,18 @@ public class TrackController {
     @Autowired
     private UriCreator uriCreator;
 
-    @GetMapping
-    //get tracks longer/shorter/equal to specific duration
-    public List<Track> getAllTracks(@RequestParam Map<String,String> queryStrings) {
-        List<Track> tracks = null;
-        if(queryStrings.isEmpty()) {
-            tracks = trackService.getAllTracks();
-        } else {
-            tracks = trackService.getAllTracksByQueryParams(queryStrings);
-        }
-
-        return tracks;
-    }
+//    @GetMapping
+//    //get tracks longer/shorter/equal to specific duration
+//    public List<Track> getAllTracks(@RequestParam Map<String,String> queryStrings) {
+//        List<Track> tracks = null;
+//        if(queryStrings.isEmpty()) {
+//            tracks = trackService.getAllTracks();
+//        } else {
+//            tracks = trackService.getAllTracksByQueryParams(queryStrings);
+//        }
+//
+//        return tracks;
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTrack(@PathVariable("id") int id){
@@ -46,14 +46,14 @@ public class TrackController {
         return ResponseEntity.ok(track);
     }
 
-    @GetMapping("/{id}/artists")
-    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-        List<Artist> artists = trackService.getArtistsByTrack(id);
-        if (artists == null) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
-        }
-        return ResponseEntity.ok(artists);
-    }
+//    @GetMapping("/{id}/artists")
+//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
+//        List<Artist> artists = trackService.getArtistsByTrack(id);
+//        if (artists == null) {
+//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
+//        }
+//        return ResponseEntity.ok(artists);
+//    }
 
 
 

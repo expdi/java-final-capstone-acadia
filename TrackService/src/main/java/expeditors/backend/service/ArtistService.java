@@ -1,10 +1,7 @@
 package expeditors.backend.service;
 
-import expeditors.backend.dao.ArtistDAO;
-import expeditors.backend.dao.TrackDAO;
+import expeditors.backend.dao.ArtistRepo;
 import expeditors.backend.domain.Artist;
-import expeditors.backend.domain.MediaType;
-import expeditors.backend.domain.Track;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +12,15 @@ import java.util.function.Predicate;
 @Service
 public class ArtistService {
     @Autowired
-    private ArtistDAO artistDAO;
-
-    @Autowired
-    private TrackDAO trackDAO;
+    private ArtistRepo artistRepo;
 
     public Artist addArtist(Artist artist){
-        return artistDAO.insert(artist);
+        return artistRepo.save(artist);
     }
 
 
     public List<Artist> getAllArtists(){
-        List<Artist> allArtists = artistDAO.findAll();
+        List<Artist> allArtists = artistRepo.findAll();
         return allArtists;
     }
     public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
@@ -51,15 +45,26 @@ public class ArtistService {
 //        List<Track> tracks = trackDAO.findAll();
 //    }
     public Artist getArtist(int id){
-        Artist artist = artistDAO.findById(id);
+        Artist artist = artistRepo.findById(id).orElse(null);;
         return artist;
     }
-    public boolean deleteArtist(int id){
-        return artistDAO.delete(id);
+
+    public boolean deleteArtist(int id) {
+        Artist artist = artistRepo.findById(id).orElse(null);
+        if (artist != null) {
+            artistRepo.delete(artist);
+            return true;
+        }
+        return false;
     }
 
-    public boolean updateArtist(Artist artist){
-        return artistDAO.update(artist);
+    public boolean updateArtist(Artist artist) {
+        Artist oldArtist = artistRepo.findById(artist.getId()).orElse(null);
+        if (oldArtist != null) {
+            artistRepo.save(artist);
+            return true;
+        }
+        return false;
     }
 
 

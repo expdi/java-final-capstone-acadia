@@ -1,35 +1,24 @@
 package expeditors.backend.domain;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Table(name="Artist")
 public class Artist {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private int id;
+    @Column(name="name")
     private String name;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Artist( int id, String name){
-        this.id = id;
-        this.name = name;
-    }
-    public Artist(){
-
-    }
-    public Artist(String name){
-        this.name = name;
-    }
 
     public static class ArtistBuilder {
         private int id;
@@ -54,7 +43,7 @@ public class Artist {
 
     @Override
     public String toString(){
-        return String.format("Artist{id=%d, name='%s'}", this.getId(), this.getName());
+        return String.format("Artist{id=%d, name='%s'}", id, name);
     }
 
 
