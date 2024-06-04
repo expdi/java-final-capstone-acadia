@@ -87,6 +87,7 @@ public class TrackServiceTest {
         Track track1 = new Track();
         track1.setTitle("Standing Next to You");
         trackRepo.save(track1);
+        Track track2 = trackRepo.findById(track1.getId()).orElse(null);
         System.out.println(track1);
 
 //        assertNotNull(trackRepo.findById(1));
