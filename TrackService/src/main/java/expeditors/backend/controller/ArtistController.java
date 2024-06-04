@@ -56,6 +56,7 @@ public class ArtistController {
         return ResponseEntity.ok(artist);
     }
 
+
 //    @GetMapping("/artist/{id}/tracks")
 //    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
 //        //do
