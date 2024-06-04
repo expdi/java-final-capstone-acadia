@@ -36,10 +36,10 @@ public class TrackServiceTest {
     @Autowired
     private TrackRepo trackRepo;
 
-    @BeforeEach
-    public void clearTracks(){
-        trackService.deleteAllTracks();
-    }
+//    @BeforeEach
+//    public void clearTracks(){
+//        trackService.deleteAllTracks();
+//    }
 
     @Test
     public void testCreateDatabase(){
