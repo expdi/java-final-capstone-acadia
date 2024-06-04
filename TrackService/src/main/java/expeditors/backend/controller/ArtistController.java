@@ -1,5 +1,7 @@
 package expeditors.backend.controller;
 
+import expeditors.backend.dao.ArtistRepo;
+import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
 import expeditors.backend.utils.UriCreator;
@@ -10,11 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/")
 public class ArtistController {
+    //Added Vincent
+    @Autowired
+    private ArtistRepo artistRepo;
+
+    //Added Vincent
+    @Autowired
+    private TrackRepo trackRepo;
 
     @Autowired
     private ArtistService artistService;
@@ -54,7 +66,50 @@ public class ArtistController {
 //        return ResponseEntity.ok(tracks);
 //    }
 
-    @PostMapping("/artist")
+    @PostMapping("/createArtist")
+    //Vincent's code
+    public String creatArtist(@RequestBody Artist entity) {
+        System.out.println("\nCreate a new Artist." + "\n");
+
+        // Create a new artist
+        Artist artist = new Artist(entity.getName());
+
+        // Save the artist
+        artist = artistRepo.save(artist);
+        System.out.println("\nSaved artist :: " + artist + "\n");
+        return "Artist saved!!!";
+    }
+
+    @PostMapping("createArtistForTrack/{trackId}")
+    public String createArtistForTrack(@RequestBody Artist entity, @PathVariable(name = "trackId") Integer trackId) {
+        //Create a new artist
+        Artist artist = new Artist(entity.getName());
+
+        //Save the artist
+        artist = artistRepo.save(artist);
+        System.out.println("\nSaved artist :: " + artist + "\n");
+
+        //Get the track based on track id in the url
+        Track track = this.trackRepo.getById(Integer.valueOf(trackId));
+        System.out.println("\nTrack details :: " + track.toString() + "\n");
+
+        //Create Artist set
+        Set<Artist> artists = new HashSet<>();
+        artists.add(artist);
+
+        //Assign Track to Artist
+        track.setArtists(artists);
+
+        //Save Track
+        track = trackRepo.save(track);
+
+        System.out.println("\nArtist assigned to the Track." + "\n");
+
+        return "Artist saved!!!";
+    }
+
+    //Sean's code
+    /*
     public ResponseEntity<?> insertArtist(@RequestBody Artist artist){
         Artist newArtist = artistService.addArtist(artist);
         if (newArtist != null) {
@@ -65,6 +120,7 @@ public class ArtistController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+    */
 
     @DeleteMapping("/artist/{id}")
     public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){

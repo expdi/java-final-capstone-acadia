@@ -1,5 +1,6 @@
 package expeditors.backend.controller;
 
+import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
 import expeditors.backend.service.TrackService;
@@ -12,17 +13,39 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/track")
+//@RequestMapping("/track")
+@RequestMapping("/api")
 public class TrackController {
+    //Added Vincent
+    @Autowired
+    private TrackRepo trackRepo;
+
     @Autowired
     private TrackService trackService;
 
     @Autowired
     private UriCreator uriCreator;
+
+    //Added Vincent
+    @PostMapping("/createTrack")
+    public String createTrack(@RequestBody Track entity) {
+        System.out.println("\nCreate a new Track.\n");
+
+        //Create a new track
+        Track track = new Track(entity.getTitle(), entity.getAlbum(), entity.getIssueDate(), entity.getDuration(), entity.getMediaType(), entity.getPrice());
+
+        //Save the track
+        track = trackRepo.save(track);
+
+        System.out.println("\nSaved Track :: " + track + "\n");
+        return "Track saved!!!";
+
+    }
 
 //    @GetMapping
 //    //get tracks longer/shorter/equal to specific duration

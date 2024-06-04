@@ -21,10 +21,25 @@ public class Artist {
     private int id;
     @Column(name="name")
     private String name;
+
+    //Sean's code
+    /*
     @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
     private Set<Track> tracks = new HashSet<>();
+    */
 
-//    public static class ArtistBuilder {
+    //Vincent's code
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "artist_id"),
+            inverseJoinColumns = @JoinColumn(name = "track_id"))
+    private Set<Track> tracks;
+
+    // Added by Vincent
+    public Artist(String name) {
+        this.name = name;
+    }
+
+    //    public static class ArtistBuilder {
 //        private int id;
 //        private String name;
 //

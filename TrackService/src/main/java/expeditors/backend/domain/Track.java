@@ -40,11 +40,28 @@ public class Track {
     @Column(name="mediaType")
     private MediaType mediaType;
 
+    //Sean's code
+    /*
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private Set<Artist> artists = new HashSet<>();
+    */
 
+    //Vincent's code
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "track_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+    private Set<Artist> artists;
+
+    public Track(String title, String album, LocalDate issueDate, Duration duration, MediaType mediaType, String price) {
+        this.title = title;
+        this.album = album;
+        this.issueDate = issueDate;
+        this.duration = duration;
+        this.mediaType = mediaType;
+        this.price = price;
+    }
 
     @Column(name="price")
     private String price;
