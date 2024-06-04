@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/artist")
 public class ArtistController {
 
     @Autowired
@@ -22,7 +23,7 @@ public class ArtistController {
     @Autowired
     private UriCreator uriCreator;
 
-    @GetMapping("/artists")
+    @GetMapping
     //get tracks longer/shorter/equal to specific duration
     public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
         List<Artist> artists = null;

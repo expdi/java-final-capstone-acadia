@@ -37,8 +37,8 @@ public class Track {
     private MediaType mediaType;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"), foreignKey = @ForeignKey(name="fk_artist_track_track"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"), inverseForeignKey = @ForeignKey(name="fk_artist_track_artist"))
     private List<Artist> artists;
 
 
