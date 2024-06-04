@@ -50,9 +50,9 @@ public class Track {
 
     //Vincent's code
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "track_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private Set<Artist> artists;
+    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"), foreignKey = @ForeignKey(name="fk_artist_track_track"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"), inverseForeignKey = @ForeignKey(name="fk_artist_track_artist"))
+    private Set<Artist> artists = new HashSet<>();
 
     public Track(String title, String album, LocalDate issueDate, Duration duration, MediaType mediaType, String price) {
         this.title = title;

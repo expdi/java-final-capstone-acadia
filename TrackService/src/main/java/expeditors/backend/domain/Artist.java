@@ -1,11 +1,10 @@
 package expeditors.backend.domain;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @Table(name="Artist")
 public class Artist {
     @Id
@@ -23,16 +23,14 @@ public class Artist {
     private String name;
 
     //Sean's code
-    /*
     @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
     private Set<Track> tracks = new HashSet<>();
-    */
 
     //Vincent's code
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "track_id"))
-    private Set<Track> tracks;
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+//    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "artist_id"),
+//            inverseJoinColumns = @JoinColumn(name = "track_id"))
+//    private Set<Track> tracks;
 
     // Added by Vincent
     public Artist(String name) {
