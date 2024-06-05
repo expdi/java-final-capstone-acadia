@@ -2,19 +2,22 @@ package expeditors.backend.controller;
 
 import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
+import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
+import expeditors.backend.domain.TypeDuration;
+import expeditors.backend.price.PriceProvider;
 import expeditors.backend.service.ArtistService;
 import expeditors.backend.service.TrackService;
 import expeditors.backend.utils.UriCreator;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.Year;
 import java.util.*;
 
 @RestController
@@ -32,82 +35,80 @@ public class TrackController {
     private TrackService trackService;
 
     @Autowired
+    private PriceProvider priceProvider;
+
+    @Autowired
     private UriCreator uriCreator;
-    @GetMapping(path = "/holamundo")
-    public ResponseEntity<?> getHolaMundo() {
-        return ResponseEntity.ok("Hola mundo!!");
-    }
     //Added Vincent
-    @PostMapping("/createTrack/{artistId}")
-    public ResponseEntity<?> createTrack(@RequestBody Track entity,@PathVariable(name = "artistId") int artistId) {
-        System.out.println("\nCreate a new Track.\n");
-
-        Track track = trackService.addTrack(entity);
-
-        System.out.println("\nSaved Track :: " + track + "\n");
-        Artist artist = artistService.getArtist(artistId);
-        Set<Track> tracks = new HashSet<>();
-        tracks.add(track);
-
-        artist.setTracks(tracks);
-
-        artistService.addArtist(artist);
-
-        URI newResource = uriCreator.getURI(track.getId());
-        return ResponseEntity.created(newResource).build();
+    @PostMapping("/createTrackWithArtists")
+    public ResponseEntity<?> createTrack(@RequestBody Track entity) {
+        try {
+            Track track = trackService.addTrack(entity);
+            priceProvider.addPriceToTrack(track);
+            URI newResource = uriCreator.getURI(track.getId());
+            return ResponseEntity.created(newResource).body(track);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error:" + e.getCause().getMessage());
+        }
 
     }
-
-//    @GetMapping
-//    //get tracks longer/shorter/equal to specific duration
-//    public List<Track> getAllTracks(@RequestParam Map<String,String> queryStrings) {
-//        List<Track> tracks = null;
-//        if(queryStrings.isEmpty()) {
-//            tracks = trackService.getAllTracks();
-//        } else {
-//            tracks = trackService.getAllTracksByQueryParams(queryStrings);
-//        }
-//
-//        return tracks;
-//    }
-
+    @GetMapping
+    public ResponseEntity<?> getAllTracks() {
+        List<Track> tracks = trackService.getAllTracks();
+        if (tracks.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Tracks");
+        }
+        tracks.forEach(track -> {priceProvider.addPriceToTrack(track);});
+        return ResponseEntity.ok(tracks);
+    }
     @GetMapping("/getTrack/{id}")
     public ResponseEntity<?> getTrack(@PathVariable("id") int id){
         Track track = trackService.getTrack(id);
         if (track == null) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with id: " + id);
         }
         return ResponseEntity.ok(track);
     }
-
     @GetMapping("/getTracksByAlbum/{album}")
     public ResponseEntity<?> getTracksByAlbum(@PathVariable("album") String album) {
         List<Track> tracks = trackService.getTracksByAlbum(album);
         return ResponseEntity.ok(tracks);
 
     }
-
-//    @GetMapping("/{id}/artists")
-//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-//        List<Artist> artists = trackService.getArtistsByTrack(id);
-//        if (artists == null) {
-//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
+    @GetMapping("/getArtistsByTrack/{id}")
+    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
+        Track track = trackService.getArtistsByTrack(id);
+        if (track == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with id: " + id);
+        }
+        return ResponseEntity.ok(track.getArtists());
+    }
+    @GetMapping("/getTracksByMediaType/{mediaType}")
+    public ResponseEntity<?> getTracksByMediaType(@PathVariable("mediaType") MediaType mediaType) {
+        List<Track> track = trackService.getTrackByMediaType(mediaType);
+        if (track.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with Media Type: " + mediaType);
+        }
+        return ResponseEntity.ok(track);
+    }
+    @GetMapping("/getTrackByYear/{issueDate}")
+    public ResponseEntity<?> getTrackByYear(@PathVariable("issueDate") Year issueDate) {
+        List<Track> track = trackService.getAlbumByYear(issueDate.getValue());
+        if (track.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with Year: " + issueDate);
+        }
+        return ResponseEntity.ok(track);
+    }
+//    @GetMapping("/getTrackByDuration")
+//    public ResponseEntity<?> getTrackByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
+//        if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
+//            List<Track> track = trackService.getTrackByDuration(typeDuration, duration);
+//            if (track.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
+//            }
+//            return ResponseEntity.ok(track);
 //        }
-//        return ResponseEntity.ok(artists);
-//    }
-
-
-
-//    @PostMapping
-//    public ResponseEntity<?> insertTrack(@RequestBody Track track){
-//        Track newTrack = trackService.addTrack(track);
-//        if (newTrack != null) {
-//            URI newResource = uriCreator.getURI(newTrack.getId());
-//            return ResponseEntity.created(newResource).build();
-//        } else {
-//            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
-//            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No track with this TypeDuration: " + typeDuration);
 //    }
 
     @DeleteMapping("/{id}")
