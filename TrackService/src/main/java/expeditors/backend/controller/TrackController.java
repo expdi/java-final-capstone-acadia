@@ -71,7 +71,7 @@ public class TrackController {
 //        return tracks;
 //    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getTrack/{id}")
     public ResponseEntity<?> getTrack(@PathVariable("id") int id){
         Track track = trackService.getTrack(id);
         if (track == null) {
