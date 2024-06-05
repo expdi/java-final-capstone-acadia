@@ -46,7 +46,7 @@ public class TrackController {
 
         System.out.println("\nSaved Track :: " + track + "\n");
         Artist artist = artistService.getArtist(artistId);
-        List<Track> tracks = new ArrayList<>();
+        Set<Track> tracks = new HashSet<>();
         tracks.add(track);
 
         artist.setTracks(tracks);

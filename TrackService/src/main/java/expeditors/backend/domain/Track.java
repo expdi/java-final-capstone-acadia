@@ -55,12 +55,12 @@ public class Track {
     //Vincent's code
     @JacksonXmlElementWrapper(localName = "classes")
     @JacksonXmlProperty(localName = "class")
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {  CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @Getter(onMethod_ = @__(@JsonIgnore))
     @Setter(onMethod_ = @__(@JsonProperty))
     @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"), foreignKey = @ForeignKey(name="fk_artist_track_track"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"), inverseForeignKey = @ForeignKey(name="fk_artist_track_artist"))
-    private List<Artist> artists = new ArrayList<>();
+    private Set<Artist> artists = new HashSet<>();
 
     public Track(String title, String album, LocalDate issueDate, Duration duration, MediaType mediaType, String price) {
         this.title = title;

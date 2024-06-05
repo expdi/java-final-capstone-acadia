@@ -92,7 +92,7 @@ public class ArtistController {
         System.out.println("\nTrack details :: " + track.toString() + "\n");
 
         //Create Artist set
-        List<Artist> artists = new ArrayList<>();
+        Set<Artist> artists = new HashSet<>();
         artists.add(artist);
 
         //Assign Track to Artist
