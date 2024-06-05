@@ -3,9 +3,12 @@ package expeditors.backend.price;
 import expeditors.backend.domain.Track;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.util.Base64;
 
 @Component
 @Profile("networkprice")
@@ -18,10 +21,14 @@ public class NetworkPriceProvider implements PriceProvider {
         var rootUrl = "/price";
         priceUrl = rootUrl + "/{id}";
 
+        String notEncoded = "super:password";
+        String encodedAuth = Base64.getEncoder().encodeToString(notEncoded.getBytes());
+
         this.restClient = RestClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader("Accept", "application/json")
                 .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Authorization", "Basic " + encodedAuth)
                 .build();
     }
 
