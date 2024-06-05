@@ -12,4 +12,8 @@ public interface ArtistRepo extends JpaRepository<Artist, Integer> {
     @Query("select a from Artist a left join fetch a.tracks")
     List<Artist> findAllWithTracks();
 
+    List<Artist> findAllByNameContainingIgnoreCase(String name);
+
+
+
 }
