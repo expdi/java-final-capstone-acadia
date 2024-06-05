@@ -30,11 +30,6 @@ public class TrackServiceTest {
     @Autowired
     private TrackService trackService;
 
-    @Autowired
-    private ArtistRepo artistRepo;
-
-    @Autowired
-    private TrackRepo trackRepo;
 
 //    @BeforeEach
 //    public void clearTracks(){
@@ -42,15 +37,17 @@ public class TrackServiceTest {
 //    }
 
     @Test
-    public void testCreateDatabase(){
+//    @Transactional
+    public void testFindByYear(){
+        //Use repository
+        //List<Track> trackList = trackRepo.findByYear(1983);
 
+        //Use service
+        List<Track> trackList = trackService.getAlbumByYear(2024);
+
+        assertEquals(1, trackList.size());
     }
 
-
-//    @Test
-//    public void testPrint(){
-//
-//    }
 //    @Test
 //    public void testGetAllTracks(){
 //
@@ -79,34 +76,7 @@ public class TrackServiceTest {
 //        assertNull(track);
 //    }
 //
-    @Test
-    public void testInsertTrack(){
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-        Track track1 = new Track();
-        track1.setTitle("Standing Next to You");
-        trackRepo.save(track1);
-        Track track2 = trackRepo.findById(track1.getId()).orElse(null);
-        System.out.println(track1);
 
-//        assertNotNull(trackRepo.findById(1));
-//        List<Artist> artistList = artistRepo.findAll();
-//        artistList.forEach(System.out :: println);
-//        Artist artist1 = new Artist();
-//        artist1.setName("JungKook");
-//        artistRepo.save(artist1);
-//        System.out.println(artist1);
-
-//
-//
-//        track1.getArtists().add(artist1);
-
-        //trackService.addTrack(track1);
-
-
-//        System.out.println(track1);
-    }
 //
 //    @Test
 //    public void testUpdateTrack(){

@@ -43,8 +43,6 @@ public class Track {
 
     @Column(name="mediaType")
     private int mediaType;
-
-
     private transient MediaType mediaTypeEnum;
 
     @JacksonXmlElementWrapper(localName = "classes")
