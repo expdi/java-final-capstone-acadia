@@ -1,0 +1,8 @@
+POST localhost:8080/api/artist/createArtist
+Content-Type: application/json
+
+{"name": "Rosendo test"}
+###
+
+GET http://localhost:8080/api/artist/artists
+###
