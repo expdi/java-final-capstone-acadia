@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,7 +24,19 @@ public class PriceControllerMvcTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testGetTrackPrice() throws Exception{
+    public void testGetTrackPriceWithOutUserGives401() throws Exception{
+        int id = 1;
+
+        MockHttpServletRequestBuilder builder = get("/price/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        ResultActions actions = mockMvc.perform(builder)
+                .andExpect(status().isUnauthorized());
+    }
+    @Test
+    @WithMockUser(roles = {"USER"})
+    public void testGetTrackPriceWithUserGivesOk() throws Exception{
         int id = 1;
 
         MockHttpServletRequestBuilder builder = get("/price/{id}", id)
@@ -44,7 +57,8 @@ public class PriceControllerMvcTest {
     }
 
     @Test
-    public void testGetLimits() throws Exception {
+    @WithMockUser(roles = {"USER"})
+    public void testGetLimitsWithValidUserGivesOk() throws Exception {
         var actions = mockMvc.perform(get("/admin/lowerLimit"))
                 .andExpect(status().isOk()).andReturn();
         var ll = actions.getResponse().getContentAsString();
@@ -56,7 +70,18 @@ public class PriceControllerMvcTest {
     }
 
     @Test
-    public void testSetLimits() throws Exception {
+    @WithMockUser(roles = {"USER"})
+    public void testSetLimitsWithoutAdminUserGives403() throws Exception {
+        var actions = mockMvc.perform(put("/admin/lowerLimit/{ll}", 2))
+                .andExpect(status().isForbidden()).andReturn();
+
+        actions = mockMvc.perform(put("/admin/highLimit/{hl}", 12))
+                .andExpect(status().isForbidden()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    public void testSetLimitsWitAdminUserGivesOk() throws Exception {
         var actions = mockMvc.perform(put("/admin/lowerLimit/{ll}", 2))
                 .andExpect(status().isNoContent()).andReturn();
 
