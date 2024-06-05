@@ -17,12 +17,12 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetaulService(){
         UserDetails superUser = User.withUsername("super")
-                .password("superpassword")
+                .password("{bcrypt}$2a$04$1BDg//200baRK2DIWLy9Oe1yR7lYdoJP31MFwGMmGorjbh3.Z/5YG")
                 .roles("ADMIN", "USER")
                 .build();
 
         UserDetails user = User.withUsername("user")
-                .password("password")
+                .password("{bcrypt}$2a$04$7/EVpgT6spVEXFE6DZoveOYru20gizN40opqugzckjffKTOLuIBLO")
                 .roles("USER")
                 .build();
 
