@@ -99,17 +99,17 @@ public class TrackController {
         }
         return ResponseEntity.ok(track);
     }
-//    @GetMapping("/getTrackByDuration")
-//    public ResponseEntity<?> getTrackByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
-//        if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
-//            List<Track> track = trackService.getTrackByDuration(typeDuration, duration);
-//            if (track.isEmpty()) {
-//                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
-//            }
-//            return ResponseEntity.ok(track);
-//        }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No track with this TypeDuration: " + typeDuration);
-//    }
+    @GetMapping("/getTrackByDuration")
+    public ResponseEntity<?> getTrackByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
+        if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
+            List<Track> track = trackService.getTrackByDuration(typeDuration, duration);
+            if (track.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
+            }
+            return ResponseEntity.ok(track);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No track with this TypeDuration: " + typeDuration);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrack(@PathVariable("id") int id){

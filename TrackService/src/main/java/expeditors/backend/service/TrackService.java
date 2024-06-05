@@ -87,18 +87,16 @@ public class TrackService {
         trackList.forEach(fe -> {priceProvider.addPriceToTrack(fe);fe.setMediaTypeEnum(mediaType);});
         return trackList;
     }
-//    public List<Track> getTrackByDuration(TypeDuration typeDuration, Duration duration) {
-//        String time = formatDuration(duration);
-//        Time time1 = Time.valueOf(time);
-//        return switch (typeDuration) {
-//            case Longer ->
-//                    trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration()) > Time.valueOf(time).getTime()).collect(Collectors.toList());
-//            case Shorted ->
-//                    trackRepo.findAll().stream().filter(f -> f.getDuration().abs().getSeconds() < Time.valueOf(time).getTime()).collect(Collectors.toList());
-//            case Equal ->
-//                    trackRepo.findAll().stream().filter(f -> f.getDuration().abs().getSeconds() == Time.valueOf(time).getTime()).collect(Collectors.toList());
-//        };
-//    }
+    public List<Track> getTrackByDuration(TypeDuration typeDuration, Duration duration) {
+        return switch (typeDuration) {
+            case Longer ->
+                    trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).after(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
+            case Shorted ->
+                    trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).before(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
+            case Equal ->
+                    trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).equals(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
+        };
+    }
     public static String formatDuration(Duration duration) {
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);
