@@ -12,13 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/artist")
 public class ArtistController {
     //Added Vincent
     @Autowired
