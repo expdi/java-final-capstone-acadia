@@ -32,9 +32,7 @@ public class TrackService {
         return track;
     }
     public List<Track> getAllTracks(){
-        List<Track> allTracks = trackRepo.findAll();
-        allTracks.forEach(priceProvider :: addPriceToTrack);
-        return allTracks;
+        return trackRepo.findAll();
     }
 
     //TODO: getAllTracksByQueryParams

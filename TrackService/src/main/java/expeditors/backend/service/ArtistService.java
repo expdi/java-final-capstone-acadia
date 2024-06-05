@@ -20,7 +20,7 @@ public class ArtistService {
 
 
     public List<Artist> getAllArtists(){
-        List<Artist> allArtists = artistRepo.findAll();
+        List<Artist> allArtists = artistRepo.findAllWithTracks();
         return allArtists;
     }
     public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {

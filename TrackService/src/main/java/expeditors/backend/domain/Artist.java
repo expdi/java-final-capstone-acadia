@@ -1,4 +1,6 @@
 package expeditors.backend.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +26,11 @@ public class Artist {
 
     //Sean's code
     @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
+    @Getter(onMethod_ = @__(@JsonIgnore))
+    @Setter(onMethod_ = @__(@JsonProperty))
+    //@JsonProperty(access = Access.WRITE_ONLY)
     private Set<Track> tracks = new HashSet<>();
+
 
     //Vincent's code
 //    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
