@@ -42,17 +42,11 @@ public class Track {
     private Duration duration;
 
     @Column(name="mediaType")
-    private MediaType mediaType;
+    private int mediaType;
 
-    //Sean's code
-    /*
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private Set<Artist> artists = new HashSet<>();
-    */
 
-    //Vincent's code
+    private transient MediaType mediaTypeEnum;
+
     @JacksonXmlElementWrapper(localName = "classes")
     @JacksonXmlProperty(localName = "class")
     @ManyToMany(fetch = FetchType.LAZY, cascade = {  CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
@@ -62,7 +56,7 @@ public class Track {
             inverseJoinColumns = @JoinColumn(name = "artist_id"), inverseForeignKey = @ForeignKey(name="fk_artist_track_artist"))
     private Set<Artist> artists = new HashSet<>();
 
-    public Track(String title, String album, LocalDate issueDate, Duration duration, MediaType mediaType, String price) {
+    public Track(String title, String album, LocalDate issueDate, Duration duration, int mediaType, String price) {
         this.title = title;
         this.album = album;
         this.issueDate = issueDate;

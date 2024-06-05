@@ -8,9 +8,10 @@ import expeditors.backend.price.PriceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TrackService {
@@ -22,6 +23,7 @@ public class TrackService {
     private PriceProvider priceProvider;
 
     public Track addTrack(Track track){
+        track.setMediaType(track.getMediaTypeEnum().ordinal());
         return trackRepo.save(track);
     }
 
@@ -70,4 +72,12 @@ public class TrackService {
         return trackRepo.findByYear(year);
     }
 
+    public Track getArtistsByTrack(int id) {
+        return trackRepo.findById(id).orElse(null);
+    }
+    public List<Track> getTrackByMediaType(MediaType mediaType) {
+        List<Track> trackList = trackRepo.getTrackByMediaType(mediaType.ordinal());
+        trackList.forEach(fe -> {priceProvider.addPriceToTrack(fe);fe.setMediaTypeEnum(mediaType);});
+        return trackList;
+    }
 }
