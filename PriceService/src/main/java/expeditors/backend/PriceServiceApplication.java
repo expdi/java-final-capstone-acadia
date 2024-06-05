@@ -3,9 +3,11 @@ package expeditors.backend;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
+@PropertySource("classpath:/trackpricing.properties")
 public class PriceServiceApplication {
 
     public static void main(String[] args) {
