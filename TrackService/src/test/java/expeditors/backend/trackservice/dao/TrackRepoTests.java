@@ -7,6 +7,8 @@ import expeditors.backend.service.TrackService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
@@ -14,13 +16,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@Transactional
 public class TrackRepoTests {
 
     @Autowired
     TrackRepo trackRepo;
-
-    @Autowired
-    TrackService trackService;
 
     @Test
     public void testInsertTrack() {
@@ -28,33 +28,40 @@ public class TrackRepoTests {
         track1.setTitle("Standing Next to You");
         trackRepo.save(track1);
         Track track2 = trackRepo.findById(track1.getId()).orElse(null);
-        System.out.println(track2);
+        assertEquals(3, track2.getId());
     }
 
     @Test
     public void testFindByYear(){
-        //Use repository
-        //List<Track> trackList = trackRepo.findByYear(1983);
-
-        //Use service
-        List<Track> trackList = trackService.getAlbumByYear(2024);
-
-        assertEquals(1, trackList.size());
+        List<Track> trackList = trackRepo.findByYear(2024);
+        assertEquals("Red", trackList.getFirst().getAlbum());
     }
 
     @Test
-    public void testFindByAlbum() {
-        //Use repository
-        //List<Track> trackList = trackRepo.findByAlbum("Dark Side Of The Moon");
-
-        //Use service
-        List<Track> trackList = trackService.getTracksByAlbum("Red");
-
-        assertEquals(1, trackList.size());
+    public void testFindByAlbum(){
+        List<Track> trackList = trackRepo.findByAlbum("Red");
+        assertEquals("Red", trackList.getFirst().getAlbum());
     }
 
+
     @Test
+    @Rollback(false)
     public void testFindByDurationGreaterThanEqual(){
+        Track track1 = new Track();
+        track1.setTitle("Perfect");
+        track1.setDuration(Duration.parse( "PT0H2M44S" ));
+        trackRepo.save(track1);
+        Track track2 = new Track();
+        track2.setTitle("Love Only Knows");
+        track2.setDuration(Duration.ofMinutes(2));
+        trackRepo.save(track2);
+//        List<Track> trackList = trackRepo.findByDurationGreaterThanEqual(Duration.ofMinutes(3));
+        List<Track> trackList = trackRepo.findByDurationGreaterThanEqual(Duration.ofMinutes(3));
+        assertEquals(3, trackList.size());
+    }
+
+    @Test
+    public void testFindByDurationLessThanEqual(){
         Track track1 = new Track();
         track1.setTitle("Perfect");
         track1.setDuration(Duration.ofMinutes(4));
@@ -63,8 +70,9 @@ public class TrackRepoTests {
         track2.setTitle("Love Only Knows");
         track2.setDuration(Duration.ofMinutes(2));
         trackRepo.save(track2);
-        List<Track> trackList = trackRepo.findByDurationGreaterThanEqual(3);
-        assertEquals(3, trackList.size());
+        List<Track> trackList = trackRepo.findByDurationLessThanEqual(Duration.ofMinutes(2));
+        assertEquals(1, trackList.size());
     }
+
 
 }
