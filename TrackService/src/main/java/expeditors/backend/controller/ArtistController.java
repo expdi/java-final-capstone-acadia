@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.*;
 
 @RestController
@@ -66,7 +65,7 @@ public class ArtistController {
 
     @PostMapping("/createArtist")
     //Vincent's code
-    public String creatArtist(@RequestBody Artist entity) {
+    public String createArtist(@RequestBody Artist entity) {
         System.out.println("\nCreate a new Artist." + "\n");
 
         // Create a new artist
