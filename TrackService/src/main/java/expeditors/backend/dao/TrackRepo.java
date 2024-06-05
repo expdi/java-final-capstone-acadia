@@ -10,7 +10,11 @@ import java.util.List;
 @Repository
 public interface TrackRepo extends JpaRepository<Track, Integer> {
     @Query("select t from Track t where extract(year from t.issueDate) = :year")
-    List<Track>findByYear(@Param("year") int year);
+    List<Track> findByYear(@Param("year") int year);
+
+    List<Track> findByDurationGreaterThanEqual(int duration);
+
+    List<Track> findByDurationLessThanEqual(int duration);
 
     //@Query("select t from Track t where t.album = :album")
     List<Track>findByAlbum(@Param("album") String album);
