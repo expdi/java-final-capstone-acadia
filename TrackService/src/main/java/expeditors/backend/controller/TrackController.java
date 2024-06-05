@@ -60,13 +60,20 @@ public class TrackController {
 //        return tracks;
 //    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getTrack/{id}")
     public ResponseEntity<?> getTrack(@PathVariable("id") int id){
         Track track = trackService.getTrack(id);
         if (track == null) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
         }
         return ResponseEntity.ok(track);
+    }
+
+    @GetMapping("/getTracksByAlbum/{album}")
+    public ResponseEntity<?> getTracksByAlbum(@PathVariable("album") String album) {
+        List<Track> tracks = trackService.getTracksByAlbum(album);
+        return ResponseEntity.ok(tracks);
+
     }
 
 //    @GetMapping("/{id}/artists")

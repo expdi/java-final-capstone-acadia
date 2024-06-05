@@ -12,4 +12,7 @@ public interface TrackRepo extends JpaRepository<Track, Integer> {
     @Query("select t from Track t where extract(year from t.issueDate) = :year")
     List<Track>findByYear(@Param("year") int year);
 
+    //@Query("select t from Track t where t.album = :album")
+    List<Track>findByAlbum(@Param("album") String album);
+
 }

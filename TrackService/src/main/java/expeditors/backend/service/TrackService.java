@@ -24,6 +24,7 @@ public class TrackService {
     public Track addTrack(Track track){
         return trackRepo.save(track);
     }
+
     public Track getTrack(int id){
         Track track = trackRepo.findById(id).orElse(null);
         if (track != null){
@@ -31,6 +32,7 @@ public class TrackService {
         }
         return track;
     }
+
     public List<Track> getAllTracks(){
         List<Track> allTracks = trackRepo.findAll();
         allTracks.forEach(priceProvider :: addPriceToTrack);
@@ -60,5 +62,14 @@ public class TrackService {
     }
     public void deleteAllTracks() {
         trackRepo.deleteAll();}
+
+
+    public List<Track> getTracksByAlbum(String album) {
+        return trackRepo.findByAlbum(album);
+    }
+
+    public List<Track> getAlbumByYear(Integer year) {
+        return trackRepo.findByYear(year);
+    }
 
 }
