@@ -3,6 +3,7 @@ package expeditors.backend.controller;
 import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
+import expeditors.backend.service.ArtistService;
 import expeditors.backend.service.TrackService;
 import expeditors.backend.utils.UriCreator;
 import org.apache.coyote.Response;
@@ -14,36 +15,46 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 //@RequestMapping("/track")
-@RequestMapping("/api")
+@RequestMapping("/api/track")
 public class TrackController {
     //Added Vincent
     @Autowired
     private TrackRepo trackRepo;
 
     @Autowired
+    private ArtistService artistService;
+
+    @Autowired
     private TrackService trackService;
 
     @Autowired
     private UriCreator uriCreator;
-
+    @GetMapping(path = "/holamundo")
+    public ResponseEntity<?> getHolaMundo() {
+        return ResponseEntity.ok("Hola mundo!!");
+    }
     //Added Vincent
-    @PostMapping("/createTrack")
-    public String createTrack(@RequestBody Track entity) {
+    @PostMapping("/createTrack/{artistId}")
+    public ResponseEntity<?> createTrack(@RequestBody Track entity,@PathVariable(name = "artistId") int artistId) {
         System.out.println("\nCreate a new Track.\n");
 
-        //Create a new track
-        Track track = new Track(entity.getTitle(), entity.getAlbum(), entity.getIssueDate(), entity.getDuration(), entity.getMediaType(), entity.getPrice());
-
-        //Save the track
-        track = trackRepo.save(track);
+        Track track = trackService.addTrack(entity);
 
         System.out.println("\nSaved Track :: " + track + "\n");
-        return "Track saved!!!";
+        Artist artist = artistService.getArtist(artistId);
+        List<Track> tracks = new ArrayList<>();
+        tracks.add(track);
+
+        artist.setTracks(tracks);
+
+        artistService.addArtist(artist);
+
+        URI newResource = uriCreator.getURI(track.getId());
+        return ResponseEntity.created(newResource).build();
 
     }
 
@@ -80,17 +91,17 @@ public class TrackController {
 
 
 
-    @PostMapping
-    public ResponseEntity<?> insertTrack(@RequestBody Track track){
-        Track newTrack = trackService.addTrack(track);
-        if (newTrack != null) {
-            URI newResource = uriCreator.getURI(newTrack.getId());
-            return ResponseEntity.created(newResource).build();
-        } else {
-            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<?> insertTrack(@RequestBody Track track){
+//        Track newTrack = trackService.addTrack(track);
+//        if (newTrack != null) {
+//            URI newResource = uriCreator.getURI(newTrack.getId());
+//            return ResponseEntity.created(newResource).build();
+//        } else {
+//            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
+//            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+//        }
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrack(@PathVariable("id") int id){

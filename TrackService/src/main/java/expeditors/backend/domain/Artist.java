@@ -26,7 +26,8 @@ public class Artist {
 
     //Sean's code
     @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @Getter(onMethod_ = @__(@JsonIgnore))
+    @Setter(onMethod_ = @__(@JsonProperty))
     //@JsonProperty(access = Access.WRITE_ONLY)
     private Set<Track> tracks = new HashSet<>();
 
