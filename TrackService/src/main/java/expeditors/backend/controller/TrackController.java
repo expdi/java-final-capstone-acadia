@@ -4,6 +4,7 @@ import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
+import expeditors.backend.domain.TypeDuration;
 import expeditors.backend.price.PriceProvider;
 import expeditors.backend.service.ArtistService;
 import expeditors.backend.service.TrackService;
@@ -14,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.Year;
 import java.util.*;
 
 @RestController
@@ -48,7 +52,6 @@ public class TrackController {
         }
 
     }
-
     @GetMapping
     public ResponseEntity<?> getAllTracks() {
         List<Track> tracks = trackService.getAllTracks();
@@ -58,7 +61,6 @@ public class TrackController {
         tracks.forEach(track -> {priceProvider.addPriceToTrack(track);});
         return ResponseEntity.ok(tracks);
     }
-
     @GetMapping("/getTrack/{id}")
     public ResponseEntity<?> getTrack(@PathVariable("id") int id){
         Track track = trackService.getTrack(id);
@@ -67,14 +69,12 @@ public class TrackController {
         }
         return ResponseEntity.ok(track);
     }
-
     @GetMapping("/getTracksByAlbum/{album}")
     public ResponseEntity<?> getTracksByAlbum(@PathVariable("album") String album) {
         List<Track> tracks = trackService.getTracksByAlbum(album);
         return ResponseEntity.ok(tracks);
 
     }
-
     @GetMapping("/getArtistsByTrack/{id}")
     public ResponseEntity<?> getArtists(@PathVariable("id") int id){
         Track track = trackService.getArtistsByTrack(id);
@@ -91,6 +91,25 @@ public class TrackController {
         }
         return ResponseEntity.ok(track);
     }
+    @GetMapping("/getTrackByYear/{issueDate}")
+    public ResponseEntity<?> getTrackByYear(@PathVariable("issueDate") Year issueDate) {
+        List<Track> track = trackService.getAlbumByYear(issueDate.getValue());
+        if (track.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with Year: " + issueDate);
+        }
+        return ResponseEntity.ok(track);
+    }
+//    @GetMapping("/getTrackByDuration")
+//    public ResponseEntity<?> getTrackByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
+//        if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
+//            List<Track> track = trackService.getTrackByDuration(typeDuration, duration);
+//            if (track.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
+//            }
+//            return ResponseEntity.ok(track);
+//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No track with this TypeDuration: " + typeDuration);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrack(@PathVariable("id") int id){
