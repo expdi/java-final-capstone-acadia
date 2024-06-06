@@ -95,12 +95,12 @@ public class TrackServiceTest {
 
     @Test
     public void testGetTrackByMediaType() {
-        List<Track> tracks = trackService.getTracksByMediaType(MediaType.OGG);
+        List<Track> tracks = trackService.getTracksByMediaType(MediaType.MP3);
         assertEquals(2, tracks.size());
     }
 
     @Test
-    @Rollback(false)
+//    @Rollback(false)
     public void testGetTrackByDuration() {
         Track track1 = new Track();
         track1.setTitle("Money");

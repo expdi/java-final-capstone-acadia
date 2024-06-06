@@ -28,7 +28,9 @@ public class TrackService {
 
 //        long time = track.getDurationAux().getSeconds();
 //        track.setDuration((double) time);
-        track.setMediaType(track.getMediaTypeEnum().ordinal());
+//        if (track.getMediaTypeEnum() != null) {
+//            track.setMediaType(track.getMediaTypeEnum().ordinal());
+//        }
         return trackRepo.save(track);
     }
 
