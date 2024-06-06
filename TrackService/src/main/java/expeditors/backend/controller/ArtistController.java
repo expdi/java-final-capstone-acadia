@@ -30,39 +30,6 @@ public class ArtistController {
     @Autowired
     private UriCreator uriCreator;
 
-    @GetMapping
-    //get tracks longer/shorter/equal to specific duration
-    public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
-        List<Artist> artists = null;
-        if(queryStrings.isEmpty()) {
-            artists = artistService.getAllArtists();
-        } else {
-            artists = artistService.getAllArtistsByQueryParams(queryStrings);
-        }
-
-        return artists;
-    }
-
-    @GetMapping("/artist/{id}")
-    public ResponseEntity<?> getArtist(@PathVariable("id") int id){
-        Artist artist = artistService.getArtist(id);
-        if (artist == null) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-        }
-        return ResponseEntity.ok(artist);
-    }
-
-
-//    @GetMapping("/artist/{id}/tracks")
-//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-//        //do
-//        List<Track> tracks = artistService.getTracksByArtist(id);
-//        if (tracks == null) {
-//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-//        }
-//        return ResponseEntity.ok(tracks);
-//    }
-
     @PostMapping("/createArtist")
     //Vincent's code
     public String createArtist(@RequestBody Artist entity) {
@@ -105,6 +72,78 @@ public class ArtistController {
         return "Artist saved!!!";
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
+        boolean result = artistService.deleteArtist(id);
+        if(!result){
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<?> updateArtist(@RequestBody Artist artist){
+        boolean result = artistService.updateArtist(artist);
+        if (artist.getName() == null){
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Artist needs at least a title");
+        }
+        if(!result) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                    .body("No artist with id: " + artist.getId());
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getArtistById(@PathVariable("id") int id){
+        Artist artist = artistService.getArtist(id);
+        if (artist == null) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+        }
+        return ResponseEntity.ok(artist);
+    }
+    @GetMapping("/getArtistByName/{name}")
+    public ResponseEntity<?> getArtistByName(@PathVariable("name") String name) {
+        List<Artist> artistList = artistService.getArtistByName(name);
+        if (artistList == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No artists with name: " + name);
+        }
+        return ResponseEntity.ok(artistList);
+    }
+
+    @GetMapping("/getTrackByArtist/{name}")
+    public ResponseEntity<?> getTrackByArtist(@PathVariable("name") String name) {
+        List<Track> artistList = artistService.getTrackByArtist(name);
+        if (artistList == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tracks with artist name: " + name);
+        }
+        return ResponseEntity.ok(artistList);
+    }
+
+    @GetMapping
+    //get tracks longer/shorter/equal to specific duration
+    public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
+        List<Artist> artists = null;
+        if(queryStrings.isEmpty()) {
+            artists = artistService.getAllArtists();
+        } else {
+            artists = artistService.getAllArtistsByQueryParams(queryStrings);
+        }
+
+        return artists;
+    }
+
+    //    @GetMapping("/artist/{id}/tracks")
+//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
+//        //do
+//        List<Track> tracks = artistService.getTracksByArtist(id);
+//        if (tracks == null) {
+//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+//        }
+//        return ResponseEntity.ok(tracks);
+//    }
+
     //Sean's code
     /*
     public ResponseEntity<?> insertArtist(@RequestBody Artist artist){
@@ -118,28 +157,4 @@ public class ArtistController {
         }
     }
     */
-
-    @DeleteMapping("/artist/{id}")
-    public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
-        boolean result = artistService.deleteArtist(id);
-        if(!result){
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-        }
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/artist")
-    public ResponseEntity<?> updateStudent(@RequestBody Artist artist){
-        boolean result = artistService.updateArtist(artist);
-        if (artist.getName() == null){
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Artist needs at least a title");
-        }
-        if(!result) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
-                    .body("No artist with id: " + artist.getId());
-        }
-
-        return ResponseEntity.noContent().build();
-    }
-
 }

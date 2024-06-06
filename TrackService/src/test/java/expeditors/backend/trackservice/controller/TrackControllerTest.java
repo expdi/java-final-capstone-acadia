@@ -195,7 +195,7 @@ class TrackControllerTest {
     @Test
     void getArtistsNotExistTrack() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getArtistsByTrack/9999").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getArtistsByTrack/999").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -290,19 +290,6 @@ class TrackControllerTest {
         System.out.println("Tracks " + reo);
     }
 
-//    @Test
-//    void getTrackByDurationWithNoDuration() throws Exception {
-//        ResultActions actions = mockMvc
-//                .perform(get("/api/track/getTrackByDuration?typeDuration={typeDuration}&duration={duration}", TypeDuration.Longer, "").accept(MediaType.APPLICATION_JSON));
-//
-//        actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
-//
-//        actions = actions.andExpect(status().isNotFound());
-//
-//        MvcResult mvcr = actions.andReturn();
-//        String reo = (String) mvcr.getResponse().getContentAsString();
-//        System.out.println("Tracks " + reo);
-//    }
 
     @Test
     void deleteTrack() throws Exception {

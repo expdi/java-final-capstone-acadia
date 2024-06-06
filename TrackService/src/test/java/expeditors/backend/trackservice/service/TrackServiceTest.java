@@ -30,9 +30,10 @@ public class TrackServiceTest {
         Track track1 = new Track();
         track1.setTitle("Money");
         track1.setAlbum("Dark Side of the Moon");
+        track1.setMediaType(1);
         trackService.addTrack(track1);
         assertEquals(3, trackService.getAllTracks().size());
-        assertEquals("Money",trackService.getTrack(3).getTitle());
+        assertEquals("Money",trackService.getTrack(8).getTitle());
     }
 
     @Test
