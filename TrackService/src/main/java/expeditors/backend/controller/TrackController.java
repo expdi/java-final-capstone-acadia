@@ -22,12 +22,6 @@ import java.util.*;
 //@RequestMapping("/track")
 @RequestMapping("/api/track")
 public class TrackController {
-    //Added Vincent
-    @Autowired
-    private TrackRepo trackRepo;
-
-    @Autowired
-    private ArtistService artistService;
 
     @Autowired
     private TrackService trackService;
@@ -102,18 +96,18 @@ public class TrackController {
         if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
             List<Track> track = trackService.getTracksByDuration(typeDuration, duration);
             if (track.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No track with this TypeDuration: " + typeDuration);
             }
             return ResponseEntity.ok(track);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No track with this TypeDuration: " + typeDuration);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with this TypeDuration: " + typeDuration);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrack(@PathVariable("id") int id){
         boolean result = trackService.deleteTrack(id);
         if(!result){
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with id: " + id);
         }
         return ResponseEntity.noContent().build();
     }
