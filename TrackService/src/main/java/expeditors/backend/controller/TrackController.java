@@ -1,7 +1,6 @@
 package expeditors.backend.controller;
 
 import expeditors.backend.dao.TrackRepo;
-import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
 import expeditors.backend.domain.TypeDuration;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.sql.Time;
 import java.time.Duration;
 import java.time.Year;
 import java.util.*;
@@ -85,24 +83,24 @@ public class TrackController {
     }
     @GetMapping("/getTracksByMediaType/{mediaType}")
     public ResponseEntity<?> getTracksByMediaType(@PathVariable("mediaType") MediaType mediaType) {
-        List<Track> track = trackService.getTrackByMediaType(mediaType);
+        List<Track> track = trackService.getTracksByMediaType(mediaType);
         if (track.isEmpty()) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with Media Type: " + mediaType);
         }
         return ResponseEntity.ok(track);
     }
-    @GetMapping("/getTrackByYear/{issueDate}")
-    public ResponseEntity<?> getTrackByYear(@PathVariable("issueDate") Year issueDate) {
-        List<Track> track = trackService.getAlbumByYear(issueDate.getValue());
+    @GetMapping("/getTracksByYear/{issueDate}")
+    public ResponseEntity<?> getTracksByYear(@PathVariable("issueDate") Year issueDate) {
+        List<Track> track = trackService.getTracksByYear(issueDate.getValue());
         if (track.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with Year: " + issueDate);
         }
         return ResponseEntity.ok(track);
     }
-    @GetMapping("/getTrackByDuration")
-    public ResponseEntity<?> getTrackByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
+    @GetMapping("/getTracksByDuration")
+    public ResponseEntity<?> getTracksByDuration(@RequestParam TypeDuration typeDuration, @RequestParam Duration duration) {
         if (!typeDuration.toString().isEmpty() && !duration.toString().isEmpty()) {
-            List<Track> track = trackService.getTrackByDuration(typeDuration, duration);
+            List<Track> track = trackService.getTracksByDuration(typeDuration, duration);
             if (track.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No track with this TypeDuration: " + typeDuration);
             }
@@ -121,7 +119,7 @@ public class TrackController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateStudent(@RequestBody Track track){
+    public ResponseEntity<?> updateTrack(@RequestBody Track track){
         boolean result = trackService.updateTrack(track);
         if (track.getTitle() == null){
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Track needs at least a title");
