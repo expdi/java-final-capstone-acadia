@@ -1,15 +1,20 @@
 package expeditors.backend.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @Table(name="Artist")
 public class Artist {
     @Id
@@ -19,32 +24,50 @@ public class Artist {
     @Column(name="name")
     private String name;
 
+    //Sean's code
+    @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
+    @Getter(onMethod_ = @__(@JsonIgnore))
+    @Setter(onMethod_ = @__(@JsonProperty))
+    //@JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Track> tracks = new HashSet<>();
 
-    public static class ArtistBuilder {
-        private int id;
-        private String name;
 
-        public ArtistBuilder id(int id){
-            this.id = id;
-            return this;
-        }
+    //Vincent's code
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+//    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "artist_id"),
+//            inverseJoinColumns = @JoinColumn(name = "track_id"))
+//    private Set<Track> tracks;
 
-        public ArtistBuilder name(String name){
-            this.name = name;
-            return this;
-        }
-
-        public Artist build() {
-            return new Artist(id, name);
-        }
-
+    // Added by Vincent
+    public Artist(String name) {
+        this.name = name;
     }
 
+    //    public static class ArtistBuilder {
+//        private int id;
+//        private String name;
+//
+//        public ArtistBuilder id(int id){
+//            this.id = id;
+//            return this;
+//        }
 
-    @Override
-    public String toString(){
-        return String.format("Artist{id=%d, name='%s'}", id, name);
-    }
+//        public ArtistBuilder name(String name){
+//            this.name = name;
+//            return this;
+//        }
+
+//        public Artist build() {
+//            return new Artist(id, name);
+//        }
+
+//    }
+
+
+//    @Override
+//    public String toString(){
+//        return String.format("Artist{id=%d, name='%s'}", id, name);
+//    }
 
 
 }

@@ -1,0 +1,38 @@
+POST localhost:8080/api/track/createTrack
+Content-Type: application/json
+
+{"name": "Track demo", "title": "Title demo", "album": "Album Demo", "issueDate": "2024-06-04", "duration": "PT50S",
+"mediaType": "MP3", "price": "2.50"}
+###
+
+POST localhost:8080/api/track/createTrack
+Content-Type: application/json
+
+{"name": "Track demo", "title": "Title demo", "album": "Album Demo", "issueDate": "2024-06-04", "duration": "PT50S",
+  "mediaType": "MP3","price": "4.50", "artists": [{"id":  1,"name": "Taylor Swift"}, {"id":  3,"name": "Rosendo test"}]}
+###
+
+
+POST localhost:8080/api/track
+Content-Type: application/json
+
+{"name": "Track demo", "title": "Title demo", "album": "Album Demo", "issueDate": "2024-06-04", "duration": "PT50S",
+  "mediaType": "MP3","price": "4.50", "artists": [{"id":  1,"name": "Taylor Swift"}, {"id":  3,"name": "Rosendo test"}]}
+###
+
+POST localhost:8080/api/track
+Content-Type: application/json
+
+{"name": "Track demo", "title": "Title demo", "album": "Album Demo", "issueDate": "2024-06-04", "duration": "PT50S",
+  "mediaType": "MP3","price": "4.50", "artists": []}
+###
+
+POST localhost:8080/api/track/createTrack/1
+Content-Type: application/json
+
+{"name": "Track demo", "title": "Title demo", "album": "Album Demo", "issueDate": "2024-06-04", "duration": "PT50S",
+  "mediaType": "MP3","price": "4.50", "artists": [{"id":  1,"name": "Taylor Swift"}]}
+###
+
+GET localhost:8080/api/track/getTrack/1
+###
