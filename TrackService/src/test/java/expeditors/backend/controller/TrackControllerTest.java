@@ -237,7 +237,7 @@ class TrackControllerTest {
     @Test
     void getTrackByYear() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByYear/2024").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByYear/2024").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -251,7 +251,7 @@ class TrackControllerTest {
     @Test
     void getTrackByYearNotExist() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByYear/2026").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByYear/2026").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -265,7 +265,7 @@ class TrackControllerTest {
     @Test
     void getTrackByDuration() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByDuration?typeDuration={typeDuration}&duration={duration}", TypeDuration.Shorted, "PT50M").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByDuration?typeDuration={typeDuration}&duration={duration}", TypeDuration.Shorted, "PT4M").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -279,7 +279,7 @@ class TrackControllerTest {
     @Test
     void getTrackByDurationNotFound() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByDuration?typeDuration={typeDuration}&duration={duration}", TypeDuration.Longer, "PT50M").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByDuration?typeDuration={typeDuration}&duration={duration}", TypeDuration.Longer, "PT50M").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -335,13 +335,20 @@ class TrackControllerTest {
         Track newTrack = new Track();
         newTrack.setId(1);
         newTrack.setTitle("New Title Updated");
-        ResultActions actions = mockMvc
-                .perform(put("/api/track", newTrack)
-                        .accept(MediaType.APPLICATION_JSON));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newTrack);
+//        ResultActions actions = mockMvc
+//                .perform(put("/api/track", newTrack)
+//                        .accept(MediaType.APPLICATION_JSON));
+        ResultActions putActions = mockMvc.perform(put("/api/track")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString));
 
-        actions = actions.andExpect(status().is(400));
+        putActions = putActions.andExpect(status().isNoContent());
 
-        MvcResult mvcr = actions.andReturn();
+        MvcResult mvcr = putActions.andReturn();
 
         String reo = (String) mvcr.getResponse().getContentAsString();
     }
@@ -350,30 +357,40 @@ class TrackControllerTest {
     void updateStudentWithOutTitle() throws Exception {
         Track newTrack = new Track();
         newTrack.setId(1);
-        ResultActions actions = mockMvc
-                .perform(put("/api/track", newTrack)
-                        .accept(MediaType.APPLICATION_JSON));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newTrack);
 
-        actions = actions.andExpect(status().isBadRequest());
+        ResultActions putActions = mockMvc.perform(put("/api/track")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString));
 
-        MvcResult mvcr = actions.andReturn();
+        putActions = putActions.andExpect(status().isBadRequest());
+
+        MvcResult mvcr = putActions.andReturn();
 
         String reo = (String) mvcr.getResponse().getContentAsString();
     }
 
-//    @Test
-//    void updateStudentNotExistId() throws Exception {
-//        Track newTrack = new Track();
-//        newTrack.setId(999);
-//        newTrack.setTitle("New Title Updated");
-//        ResultActions actions = mockMvc
-//                .perform(put("/api/track", newTrack)
-//                        .accept(MediaType.APPLICATION_JSON));
-//
-//        actions = actions.andExpect(status().isNotFound());
-//
-//        MvcResult mvcr = actions.andReturn();
-//
-//        String reo = (String) mvcr.getResponse().getContentAsString();
-//    }
+    @Test
+    void updateStudentNotExistId() throws Exception {
+        Track newTrack = new Track();
+        newTrack.setId(999);
+        newTrack.setTitle("New Title Updated");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newTrack);
+
+        ResultActions putActions = mockMvc.perform(put("/api/track")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString));
+
+        putActions = putActions.andExpect(status().isNotFound());
+
+        MvcResult mvcr = putActions.andReturn();
+
+        String reo = (String) mvcr.getResponse().getContentAsString();
+    }
 }

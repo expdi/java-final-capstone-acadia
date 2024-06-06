@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +27,9 @@ public class TrackService {
 
 //        long time = track.getDurationAux().getSeconds();
 //        track.setDuration((double) time);
-        track.setMediaType(track.getMediaTypeEnum().ordinal());
+//        if (track.getMediaTypeEnum() != null) {
+//            track.setMediaType(track.getMediaTypeEnum().ordinal());
+//        }
         return trackRepo.save(track);
     }
 
@@ -69,29 +72,28 @@ public class TrackService {
         trackRepo.deleteAll();
     }
 
-
     public List<Track> getTracksByAlbum(String album) {
         return trackRepo.findByAlbum(album);
     }
 
-    public List<Track> getAlbumByYear(Integer year) {
+    public List<Track> getTracksByYear(Integer year) {
         return trackRepo.findByYear(year);
     }
 
+    //TO DO: Fix corresponding controller
+//    public Set<Artist> getArtistsByTrack(int id){
+//        Set<Artist> artists = trackRepo.findById(id).get().getArtists();
+//        return artists;
+//    }
     public Track getArtistsByTrack(int id) {
         return trackRepo.findById(id).orElse(null);
     }
-
-    public List<Track> getTrackByMediaType(MediaType mediaType) {
-        List<Track> trackList = trackRepo.getTrackByMediaType(mediaType.ordinal());
-        trackList.forEach(fe -> {
-            priceProvider.addPriceToTrack(fe);
-            fe.setMediaTypeEnum(mediaType);
-        });
+    public List<Track> getTracksByMediaType(MediaType mediaType) {
+        List<Track> trackList = trackRepo.getTracksByMediaType(mediaType.ordinal());
+        trackList.forEach(fe -> {priceProvider.addPriceToTrack(fe);fe.setMediaTypeEnum(mediaType);});
         return trackList;
     }
-
-    public List<Track> getTrackByDuration(TypeDuration typeDuration, Duration duration) {
+    public List<Track> getTracksByDuration(TypeDuration typeDuration, Duration duration) {
         return switch (typeDuration) {
             case Longer ->
                     trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).after(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
