@@ -22,6 +22,6 @@ public interface TrackRepo extends JpaRepository<Track, Integer> {
     List<Track>findByAlbum(@Param("album") String album);
 
     @Query("select t from Track t where t.mediaType = :mediaType")
-    List<Track> getTrackByMediaType(@Param("mediaType") int mediaType);
+    List<Track> getTracksByMediaType(@Param("mediaType") int mediaType);
 
 }

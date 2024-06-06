@@ -2,6 +2,7 @@ package expeditors.backend.trackservice.dao;
 
 import expeditors.backend.dao.TrackRepo;
 
+import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
 import expeditors.backend.service.TrackService;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class TrackRepoTests {
 
 
     @Test
-    @Rollback(false)
+//    @Rollback(false)
     public void testFindByDurationGreaterThanEqual(){
         Track track1 = new Track();
         track1.setTitle("Perfect");
@@ -57,7 +58,7 @@ public class TrackRepoTests {
         trackRepo.save(track2);
 //        List<Track> trackList = trackRepo.findByDurationGreaterThanEqual(Duration.ofMinutes(3));
         List<Track> trackList = trackRepo.findByDurationGreaterThanEqual(Duration.ofMinutes(3));
-        assertEquals(3, trackList.size());
+        assertEquals(2, trackList.size());
     }
 
     @Test
@@ -74,5 +75,19 @@ public class TrackRepoTests {
         assertEquals(1, trackList.size());
     }
 
+    @Test
+    public void testUpdateTrack(){
+        Track track1 = trackRepo.findById(2).orElse(null);
+        track1.setTitle("Another Brick on the Wall");
+        trackRepo.save(track1);
+        assertEquals("Another Brick on the Wall", trackRepo.findById(2).get().getTitle());
+    }
+    @Test
+    public void testDeleteTrack(){
+        Track track1 = trackRepo.findById(2).orElse(null);
+        trackRepo.delete(track1);
+        Track track2 = trackRepo.findById(2).orElse(null);
+        assertEquals(null, track2);
+    }
 
 }

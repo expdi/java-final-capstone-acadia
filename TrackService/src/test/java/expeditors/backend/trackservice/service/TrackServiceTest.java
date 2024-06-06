@@ -1,28 +1,23 @@
 package expeditors.backend.trackservice.service;
 
-import expeditors.backend.dao.ArtistRepo;
-import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
-import expeditors.backend.service.ArtistService;
+import expeditors.backend.domain.TypeDuration;
 import expeditors.backend.service.TrackService;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.Rollback;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 //@ActiveProfiles("localprice")
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class TrackServiceTest {
@@ -30,84 +25,91 @@ public class TrackServiceTest {
     @Autowired
     private TrackService trackService;
 
+    @Test
+    public void testAddTrack(){
+        Track track1 = new Track();
+        track1.setTitle("Money");
+        track1.setAlbum("Dark Side of the Moon");
+        trackService.addTrack(track1);
+        assertEquals(3, trackService.getAllTracks().size());
+        assertEquals("Money",trackService.getTrack(3).getTitle());
+    }
 
-//    @BeforeEach
-//    public void clearTracks(){
-//        trackService.deleteAllTracks();
-//    }
+    @Test
+    public void testGetTrack(){
+        Track track = trackService.getTrack(1);
+        assertEquals(1, track.getId());
+    }
+
+    @Test
+    public void testGetNonExistingTrack(){
+        Track track = trackService.getTrack(1000);
+        assertNull(track);
+    }
+
+    @Test
+    public void testGetAllTracks(){
+        List<Track> tracks = trackService.getAllTracks();
+        assertEquals(2, tracks.size());
+    }
+
+    @Test
+    public void testDeleteTrack(){
+        trackService.deleteTrack(1);
+        assertEquals(1, trackService.getAllTracks().size());
+    }
+
+    @Test
+    public void testUpdateTrack(){
+        Track track1 = trackService.getTrack(2);
+        track1.setTitle("Another Brick on the Wall");
+        trackService.updateTrack(track1);
+        assertEquals(2, trackService.getAllTracks().size());
+        assertEquals("Another Brick on the Wall",trackService.getTrack(2).getTitle());
+    }
+
+    @Test
+    public void testDeleteAllTracks(){
+        trackService.deleteAllTracks();
+        assertEquals(0, trackService.getAllTracks().size());
+    }
+
+    @Test
+    public void testGetTracksByAlbum(){
+        List<Track> tracks = trackService.getTracksByAlbum("Red");
+        assertEquals(1, tracks.size());
+    }
 
     @Test
 //    @Transactional
-    public void testFindByYear(){
-        //Use repository
-        //List<Track> trackList = trackRepo.findByYear(1983);
-
-        //Use service
-        List<Track> trackList = trackService.getAlbumByYear(2024);
+    public void testGetTracksByYear(){
+        List<Track> trackList = trackService.getTracksByYear(2024);
 
         assertEquals(1, trackList.size());
     }
 
-//    @Test
-//    public void testGetAllTracks(){
-//
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-//        trackService.addTrack(track);
-//        List<Track> tracks = trackService.getAllTracks();
-//        assertEquals(1, tracks.size());
-//        tracks.forEach(System.out::println);
-//    }
-//
-//    @Test
-//    public void testGetExistingTrack(){
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-//        trackService.addTrack(track);
-//        Track addedTrack = trackService.getTrack(1);
-//        assertNotNull(addedTrack);
-//    }
-//
-//    @Test
-//    public void testGetNonExistingTrack(){
-//        Track track = trackService.getTrack(2);
-//        assertNull(track);
-//    }
-//
+    @Test
+    public void testGetArtistsByTrack() {
+        //TO DO:
+    }
 
-//
-//    @Test
-//    public void testUpdateTrack(){
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-//        trackService.addTrack(track);
-//        track.setTitle("New Title");
-//        assertTrue(trackService.updateTrack(track));
-//    }
-//    @Test
-//    public void testUpdateNonExistingTrack(){
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-//        trackService.addTrack(track);
-//        track.setId(2);
-//        assertFalse(trackService.updateTrack(track));
-//
-//    }
-//    @Test
-//    public void testDeleteTrack(){
-//        Track track = new Track("Standing Next to You", "COMING HOME",
-//                List.of( new Artist.ArtistBuilder().id(1).name("JungKook").build(), new Artist.ArtistBuilder().id(2).name("Usher").build()),
-//                LocalDate.of(2024,2,9), Duration.ofMinutes(3).plusSeconds(35), MediaType.MP3);
-//        trackService.addTrack(track);
-//        assertTrue(trackService.deleteTrack(1));
-//    }
-//
-//    @Test
-//    public void testDeleteNonExistingTrack(){
-//        assertFalse(trackService.deleteTrack(1));
-//    }
+    @Test
+    public void testGetTrackByMediaType() {
+        List<Track> tracks = trackService.getTracksByMediaType(MediaType.OGG);
+        assertEquals(2, tracks.size());
+    }
+
+    @Test
+    @Rollback(false)
+    public void testGetTrackByDuration() {
+        Track track1 = new Track();
+        track1.setTitle("Money");
+        track1.setAlbum("Dark Side of the Moon");
+        track1.setDuration(Duration.parse("PT4M27S"));
+        trackService.addTrack(track1);
+        List<Track> tracks = trackService.getTracksByDuration(TypeDuration.Longer, Duration.parse("PT3M15S"));
+        assertEquals(1, tracks.size());
+    }
+
+
 }
