@@ -72,7 +72,7 @@ public class ArtistController {
         return "Artist saved!!!";
     }
 
-    @DeleteMapping("/artist/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
         boolean result = artistService.deleteArtist(id);
         if(!result){
@@ -81,7 +81,7 @@ public class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/artist")
+    @PutMapping("/")
     public ResponseEntity<?> updateStudent(@RequestBody Artist artist){
         boolean result = artistService.updateArtist(artist);
         if (artist.getName() == null){
@@ -95,7 +95,7 @@ public class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/artist/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getArtistById(@PathVariable("id") int id){
         Artist artist = artistService.getArtist(id);
         if (artist == null) {

@@ -8,6 +8,7 @@ import expeditors.backend.domain.TypeDuration;
 import expeditors.backend.price.PriceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TrackService {
 
     @Autowired
@@ -37,6 +39,7 @@ public class TrackService {
     public Track getTrack(int id){
         Track track = trackRepo.findById(id).orElse(null);
         if (track != null){
+            track.setMediaTypeEnum(MediaType.values()[track.getMediaType()]);
             priceProvider.addPriceToTrack(track);
         }
         return track;
@@ -80,13 +83,13 @@ public class TrackService {
     }
 
     //TO DO: Fix corresponding controller
-//    public Set<Artist> getArtistsByTrack(int id){
-//        Set<Artist> artists = trackRepo.findById(id).get().getArtists();
-//        return artists;
-//    }
-    public Track getArtistsByTrack(int id) {
-        return trackRepo.findById(id).orElse(null);
+    public Set<Artist> getArtistsByTrack(int id){
+        Set<Artist> artists = trackRepo.findById(id).get().getArtists();
+        return artists;
     }
+//    public Track getArtistsByTrack(int id) {
+//        return trackRepo.findById(id).orElse(null);
+//    }
     public List<Track> getTracksByMediaType(MediaType mediaType) {
         List<Track> trackList = trackRepo.getTracksByMediaType(mediaType.ordinal());
         trackList.forEach(fe -> {priceProvider.addPriceToTrack(fe);fe.setMediaTypeEnum(mediaType);});

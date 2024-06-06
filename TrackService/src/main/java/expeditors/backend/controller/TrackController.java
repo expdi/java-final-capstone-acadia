@@ -1,6 +1,7 @@
 package expeditors.backend.controller;
 
 import expeditors.backend.dao.TrackRepo;
+import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
 import expeditors.backend.domain.TypeDuration;
@@ -69,11 +70,11 @@ public class TrackController {
     }
     @GetMapping("/getArtistsByTrack/{id}")
     public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-        Track track = trackService.getArtistsByTrack(id);
-        if (track == null) {
+        Set<Artist> artists = trackService.getArtistsByTrack(id);
+        if (artists == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No track with id: " + id);
         }
-        return ResponseEntity.ok(track.getArtists());
+        return ResponseEntity.ok(artists);
     }
     @GetMapping("/getTracksByMediaType/{mediaType}")
     public ResponseEntity<?> getTracksByMediaType(@PathVariable("mediaType") MediaType mediaType) {

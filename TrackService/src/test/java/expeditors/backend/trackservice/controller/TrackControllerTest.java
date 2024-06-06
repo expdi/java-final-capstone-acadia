@@ -1,4 +1,4 @@
-package expeditors.backend.controller;
+package expeditors.backend.trackservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -139,7 +139,7 @@ class TrackControllerTest {
     @Test
     void getTrackByYear() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByYear/2024").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByYear/2024").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
@@ -153,7 +153,7 @@ class TrackControllerTest {
     @Test
     void getTrackByDuration() throws Exception {
         ResultActions actions = mockMvc
-                .perform(get("/api/track/getTrackByDuration?typeDuration={typeDuration}&duration={duration}",TypeDuration.Shorted,"PT50M").accept(MediaType.APPLICATION_JSON));
+                .perform(get("/api/track/getTracksByDuration?typeDuration={typeDuration}&duration={duration}",TypeDuration.Shorted,"PT50M").accept(MediaType.APPLICATION_JSON));
 
         actions = actions.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 

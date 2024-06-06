@@ -49,7 +49,7 @@ public class PriceServiceApplication {
     private Connector httpToHttpsRedirectConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(10003);
+        connector.setPort(10001);
         connector.setSecure(false);
         connector.setRedirectPort(8443);
         return connector;
