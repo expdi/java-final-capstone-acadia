@@ -2,6 +2,7 @@ package expeditors.backend.service;
 
 import expeditors.backend.dao.ArtistRepo;
 import expeditors.backend.domain.Artist;
+import expeditors.backend.domain.Track;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,37 +17,6 @@ public class ArtistService {
 
     public Artist addArtist(Artist artist){
         return artistRepo.save(artist);
-    }
-
-
-    public List<Artist> getAllArtists(){
-        List<Artist> allArtists = artistRepo.findAllWithTracks();
-        return allArtists;
-    }
-    public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
-        Predicate<Artist> finalPred = null;
-        for(var entry : queryParams.entrySet()) {
-            var key = entry.getKey();
-            var value = entry.getValue();
-            if (key.equals("name")) {
-                Predicate<Artist> tmp = (a) -> a.getName().equals(value);
-                finalPred = finalPred == null ? tmp : finalPred.or(tmp);
-            }
-        }
-        finalPred = finalPred != null ? finalPred : (t) -> true;
-        List<Artist> result = getAllArtists().stream()
-                .filter(finalPred)
-                .toList();
-
-        return result;
-    }
-    // TODO: did not complete this in time
-//    public List<Track> getTracksByArtist(int id){
-//        List<Track> tracks = trackDAO.findAll();
-//    }
-    public Artist getArtist(int id){
-        Artist artist = artistRepo.findById(id).orElse(null);;
-        return artist;
     }
 
     public boolean deleteArtist(int id) {
@@ -66,6 +36,46 @@ public class ArtistService {
         }
         return false;
     }
+
+    public Artist getArtist(int id){
+        return artistRepo.findById(id).orElse(null);
+    }
+
+    public List<Artist> getArtistByName(String name){
+        return artistRepo.findArtistByNameContainingIgnoreCase(name);
+    }
+    public List<Artist> getAllArtists(){
+        return artistRepo.findAllWithTracks();
+    }
+
+    public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
+        Predicate<Artist> finalPred = null;
+        for(var entry : queryParams.entrySet()) {
+            var key = entry.getKey();
+            var value = entry.getValue();
+            if (key.equals("name")) {
+                Predicate<Artist> tmp = (a) -> a.getName().equals(value);
+                finalPred = finalPred == null ? tmp : finalPred.or(tmp);
+            }
+        }
+        finalPred = finalPred != null ? finalPred : (t) -> true;
+        List<Artist> result = getAllArtists().stream()
+                .filter(finalPred)
+                .toList();
+
+        return result;
+    }
+
+    public List<Track> getTrackByArtist(String name){
+        return  artistRepo.getTrackByArtist(name);
+    }
+
+    // TODO: did not complete this in time
+//    public List<Track> getTracksByArtist(int id){
+//        List<Track> tracks = trackDAO.findAll();
+//    }
+
+
 
 
 

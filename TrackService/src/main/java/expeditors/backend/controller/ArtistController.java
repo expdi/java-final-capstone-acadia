@@ -30,39 +30,6 @@ public class ArtistController {
     @Autowired
     private UriCreator uriCreator;
 
-    @GetMapping
-    //get tracks longer/shorter/equal to specific duration
-    public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
-        List<Artist> artists = null;
-        if(queryStrings.isEmpty()) {
-            artists = artistService.getAllArtists();
-        } else {
-            artists = artistService.getAllArtistsByQueryParams(queryStrings);
-        }
-
-        return artists;
-    }
-
-    @GetMapping("/artist/{id}")
-    public ResponseEntity<?> getArtist(@PathVariable("id") int id){
-        Artist artist = artistService.getArtist(id);
-        if (artist == null) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-        }
-        return ResponseEntity.ok(artist);
-    }
-
-
-//    @GetMapping("/artist/{id}/tracks")
-//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-//        //do
-//        List<Track> tracks = artistService.getTracksByArtist(id);
-//        if (tracks == null) {
-//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-//        }
-//        return ResponseEntity.ok(tracks);
-//    }
-
     @PostMapping("/createArtist")
     //Vincent's code
     public String createArtist(@RequestBody Artist entity) {
@@ -105,20 +72,6 @@ public class ArtistController {
         return "Artist saved!!!";
     }
 
-    //Sean's code
-    /*
-    public ResponseEntity<?> insertArtist(@RequestBody Artist artist){
-        Artist newArtist = artistService.addArtist(artist);
-        if (newArtist != null) {
-            URI newResource = uriCreator.getURI(newArtist.getId());
-            return ResponseEntity.created(newResource).build();
-        } else {
-            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-    */
-
     @DeleteMapping("/artist/{id}")
     public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
         boolean result = artistService.deleteArtist(id);
@@ -142,4 +95,66 @@ public class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/artist/{id}")
+    public ResponseEntity<?> getArtistById(@PathVariable("id") int id){
+        Artist artist = artistService.getArtist(id);
+        if (artist == null) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+        }
+        return ResponseEntity.ok(artist);
+    }
+    @GetMapping("/getArtistByName/{name}")
+    public ResponseEntity<?> getArtistByName(@PathVariable("name") String name) {
+        List<Artist> artistList = artistService.getArtistByName(name);
+        if (artistList == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No artists with name: " + name);
+        }
+        return ResponseEntity.ok(artistList);
+    }
+
+    @GetMapping("/getTrackByArtist/{name}")
+    public ResponseEntity<?> getTrackByArtist(@PathVariable("name") String name) {
+        List<Track> artistList = artistService.getTrackByArtist(name);
+        if (artistList == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tracks with artist name: " + name);
+        }
+        return ResponseEntity.ok(artistList);
+    }
+
+    @GetMapping
+    //get tracks longer/shorter/equal to specific duration
+    public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
+        List<Artist> artists = null;
+        if(queryStrings.isEmpty()) {
+            artists = artistService.getAllArtists();
+        } else {
+            artists = artistService.getAllArtistsByQueryParams(queryStrings);
+        }
+
+        return artists;
+    }
+
+    //    @GetMapping("/artist/{id}/tracks")
+//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
+//        //do
+//        List<Track> tracks = artistService.getTracksByArtist(id);
+//        if (tracks == null) {
+//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+//        }
+//        return ResponseEntity.ok(tracks);
+//    }
+
+    //Sean's code
+    /*
+    public ResponseEntity<?> insertArtist(@RequestBody Artist artist){
+        Artist newArtist = artistService.addArtist(artist);
+        if (newArtist != null) {
+            URI newResource = uriCreator.getURI(newArtist.getId());
+            return ResponseEntity.created(newResource).build();
+        } else {
+            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+    */
 }
