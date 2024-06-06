@@ -48,7 +48,6 @@ public class Track {
     @JacksonXmlElementWrapper(localName = "classes")
     @JacksonXmlProperty(localName = "class")
     @ManyToMany(fetch = FetchType.LAZY, cascade = {  CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @Getter(onMethod_ = @__(@JsonIgnore))
     @Setter(onMethod_ = @__(@JsonProperty))
     @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "track_id"), foreignKey = @ForeignKey(name="fk_artist_track_track"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"), inverseForeignKey = @ForeignKey(name="fk_artist_track_artist"))

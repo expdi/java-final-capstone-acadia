@@ -82,7 +82,7 @@ public class ArtistController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<?> updateStudent(@RequestBody Artist artist){
+    public ResponseEntity<?> updateArtist(@RequestBody Artist artist){
         boolean result = artistService.updateArtist(artist);
         if (artist.getName() == null){
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Artist needs at least a title");
