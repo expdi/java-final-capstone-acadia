@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.*;
 
 @RestController
@@ -32,16 +33,24 @@ public class ArtistController {
 
     @PostMapping("/createArtist")
     //Vincent's code
-    public String createArtist(@RequestBody Artist entity) {
-        System.out.println("\nCreate a new Artist." + "\n");
+    public ResponseEntity<?> createArtist(@RequestBody Artist entity) {
+        try{
+            //System.out.println("\nCreate a new Artist." + "\n");
 
-        // Create a new artist
-        Artist artist = new Artist(entity.getName());
+            // Create a new artist
+            Artist artist = new Artist(entity.getName());
 
-        // Save the artist
-        artist = artistRepo.save(artist);
-        System.out.println("\nSaved artist :: " + artist + "\n");
-        return "Artist saved!!!";
+            // Save the artist
+            artist = artistRepo.save(artist);
+            URI newResource = uriCreator.getURI(artist.getId());
+            return ResponseEntity.created(newResource).body(artist);
+
+            //System.out.println("\nSaved artist :: " + artist + "\n");
+            //return "Artist saved!!!";
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error:" + e.getCause().getMessage());
+        }
+
     }
 
     @PostMapping("createArtistForTrack/{trackId}")
@@ -76,7 +85,7 @@ public class ArtistController {
     public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
         boolean result = artistService.deleteArtist(id);
         if(!result){
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No artist with id: " + id);
         }
         return ResponseEntity.noContent().build();
     }
@@ -88,7 +97,7 @@ public class ArtistController {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Artist needs at least a title");
         }
         if(!result) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No artist with id: " + artist.getId());
         }
 
