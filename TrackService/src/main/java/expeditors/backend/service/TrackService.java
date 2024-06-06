@@ -1,7 +1,6 @@
 package expeditors.backend.service;
 
 import expeditors.backend.dao.TrackRepo;
-import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
 import expeditors.backend.domain.TypeDuration;
@@ -11,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +22,7 @@ public class TrackService {
     @Autowired
     private PriceProvider priceProvider;
 
-    public Track addTrack(Track track){
+    public Track addTrack(Track track) {
 
 //        long time = track.getDurationAux().getSeconds();
 //        track.setDuration((double) time);
@@ -34,15 +30,16 @@ public class TrackService {
         return trackRepo.save(track);
     }
 
-    public Track getTrack(int id){
+    public Track getTrack(int id) {
         Track track = trackRepo.findById(id).orElse(null);
-        if (track != null){
+        if (track != null) {
+            track.setMediaTypeEnum(MediaType.values()[track.getMediaType()]);
             priceProvider.addPriceToTrack(track);
         }
         return track;
     }
 
-    public List<Track> getAllTracks(){
+    public List<Track> getAllTracks() {
         return trackRepo.findAll();
     }
 
@@ -67,8 +64,10 @@ public class TrackService {
         }
         return false;
     }
+
     public void deleteAllTracks() {
-        trackRepo.deleteAll();}
+        trackRepo.deleteAll();
+    }
 
 
     public List<Track> getTracksByAlbum(String album) {
@@ -82,11 +81,16 @@ public class TrackService {
     public Track getArtistsByTrack(int id) {
         return trackRepo.findById(id).orElse(null);
     }
+
     public List<Track> getTrackByMediaType(MediaType mediaType) {
         List<Track> trackList = trackRepo.getTrackByMediaType(mediaType.ordinal());
-        trackList.forEach(fe -> {priceProvider.addPriceToTrack(fe);fe.setMediaTypeEnum(mediaType);});
+        trackList.forEach(fe -> {
+            priceProvider.addPriceToTrack(fe);
+            fe.setMediaTypeEnum(mediaType);
+        });
         return trackList;
     }
+
     public List<Track> getTrackByDuration(TypeDuration typeDuration, Duration duration) {
         return switch (typeDuration) {
             case Longer ->
@@ -97,6 +101,7 @@ public class TrackService {
                     trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).equals(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
         };
     }
+
     public static String formatDuration(Duration duration) {
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);
