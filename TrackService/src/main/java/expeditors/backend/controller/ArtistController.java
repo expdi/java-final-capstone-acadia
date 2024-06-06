@@ -122,15 +122,9 @@ public class ArtistController {
     }
 
     @GetMapping
-    //get tracks longer/shorter/equal to specific duration
-    public List<Artist> getAllArtists(@RequestParam Map<String,String> queryStrings) {
+    public List<Artist> getAllArtists() {
         List<Artist> artists = null;
-        if(queryStrings.isEmpty()) {
-            artists = artistService.getAllArtists();
-        } else {
-            artists = artistService.getAllArtistsByQueryParams(queryStrings);
-        }
-
+        artists = artistService.getAllArtists();
         return artists;
     }
 

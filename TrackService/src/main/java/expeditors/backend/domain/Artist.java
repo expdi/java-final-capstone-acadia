@@ -24,7 +24,7 @@ public class Artist {
     private String name;
 
     //Sean's code
-    @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @Getter(onMethod_ = @__(@JsonIgnore))
     @Setter(onMethod_ = @__(@JsonProperty))
     //@JsonProperty(access = Access.WRITE_ONLY)

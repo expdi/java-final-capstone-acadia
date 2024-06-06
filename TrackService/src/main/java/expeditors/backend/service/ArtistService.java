@@ -3,6 +3,7 @@ package expeditors.backend.service;
 import expeditors.backend.dao.ArtistRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 @Service
+@Transactional
 public class ArtistService {
     @Autowired
     private ArtistRepo artistRepo;
@@ -48,32 +50,30 @@ public class ArtistService {
         return artistRepo.findAllWithTracks();
     }
 
-    public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
-        Predicate<Artist> finalPred = null;
-        for(var entry : queryParams.entrySet()) {
-            var key = entry.getKey();
-            var value = entry.getValue();
-            if (key.equals("name")) {
-                Predicate<Artist> tmp = (a) -> a.getName().equals(value);
-                finalPred = finalPred == null ? tmp : finalPred.or(tmp);
-            }
-        }
-        finalPred = finalPred != null ? finalPred : (t) -> true;
-        List<Artist> result = getAllArtists().stream()
-                .filter(finalPred)
-                .toList();
-
-        return result;
-    }
+//    public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
+//        Predicate<Artist> finalPred = null;
+//        for(var entry : queryParams.entrySet()) {
+//            var key = entry.getKey();
+//            var value = entry.getValue();
+//            if (key.equals("name")) {
+//                Predicate<Artist> tmp = (a) -> a.getName().equals(value);
+//                finalPred = finalPred == null ? tmp : finalPred.or(tmp);
+//            }
+//        }
+//        finalPred = finalPred != null ? finalPred : (t) -> true;
+//        List<Artist> result = getAllArtists().stream()
+//                .filter(finalPred)
+//                .toList();
+//
+//        return result;
+//    }
 
     public List<Track> getTrackByArtist(String name){
         return  artistRepo.getTrackByArtist(name);
     }
 
-    // TODO: did not complete this in time
-//    public List<Track> getTracksByArtist(int id){
-//        List<Track> tracks = trackDAO.findAll();
-//    }
+
+
 
 
 
