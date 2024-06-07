@@ -26,7 +26,7 @@ public class ArtistServiceTest {
         artist1.setName("Jay Chou");
         artistService.addArtist(artist1);
         assertEquals(3, artistService.getAllArtists().size());
-        assertEquals("Jay Chou",artistService.getArtist(3).getName());
+        assertEquals("Jay Chou",artistService.getArtist(artist1.getId()).getName());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ArtistServiceTest {
         artist1.setName("Jay Chou");
         artistService.updateArtist(artist1);
         assertEquals(2, artistService.getAllArtists().size());
-        assertEquals("Jay Chou",artistService.getArtist(2).getName());
+        assertEquals("Jay Chou",artistService.getArtist(artist1.getId()).getName());
     }
 
     @Test
