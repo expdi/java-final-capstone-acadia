@@ -41,7 +41,8 @@ public class ArtistController {
             Artist artist = new Artist(entity.getName());
 
             // Save the artist
-            artist = artistRepo.save(artist);
+            //artist = artistRepo.save(artist);
+            artist = artistService.addArtist(artist);
             URI newResource = uriCreator.getURI(artist.getId());
             return ResponseEntity.created(newResource).body(artist);
 

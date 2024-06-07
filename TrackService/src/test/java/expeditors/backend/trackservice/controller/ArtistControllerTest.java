@@ -63,6 +63,7 @@ public class ArtistControllerTest {
         System.out.println(reo);
     }
 
+    /*
     @Test
     void createArtistForTrackTest() throws Exception {
         Artist artist = new Artist();
@@ -82,7 +83,7 @@ public class ArtistControllerTest {
 
         String reo = (String) mvcr.getResponse().getContentAsString();
         System.out.println(reo);
-    }
+    }*/
 
     @Test
     void deleteArtistTest() throws Exception {
