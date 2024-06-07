@@ -20,4 +20,5 @@ public interface ArtistRepo extends JpaRepository<Artist, Integer> {
     @Query("select t from Track t join fetch t.artists a where a.name= :name")
     List<Track> getTrackByArtist(String name);
 
+
 }
