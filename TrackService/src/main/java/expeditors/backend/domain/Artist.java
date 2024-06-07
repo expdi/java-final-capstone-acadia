@@ -1,5 +1,7 @@
 package expeditors.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,51 +24,14 @@ public class Artist {
     @Column(name = "name")
     private String name;
 
-    //Sean's code
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE})
     @Setter(onMethod_ = @__(@JsonProperty))
-    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "artist_id"), foreignKey = @ForeignKey(name = "fk_artist_track_artist"),
-            inverseJoinColumns = @JoinColumn(name = "track_id"), inverseForeignKey = @ForeignKey(name = "fk_artist_track_track"))
-    //@JsonProperty(access = Access.WRITE_ONLY)
+    @Getter(onMethod_ = @__(@JsonIgnore))
     private Set<Track> tracks = new HashSet<>();
 
 
-    //Vincent's code
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-//    @JoinTable(name = "artist_track", joinColumns = @JoinColumn(name = "artist_id"),
-//            inverseJoinColumns = @JoinColumn(name = "track_id"))
-//    private Set<Track> tracks;
-
-    // Added by Vincent
     public Artist(String name) {
         this.name = name;
     }
-
-    //    public static class ArtistBuilder {
-//        private int id;
-//        private String name;
-//
-//        public ArtistBuilder id(int id){
-//            this.id = id;
-//            return this;
-//        }
-
-//        public ArtistBuilder name(String name){
-//            this.name = name;
-//            return this;
-//        }
-
-//        public Artist build() {
-//            return new Artist(id, name);
-//        }
-
-//    }
-
-
-//    @Override
-//    public String toString(){
-//        return String.format("Artist{id=%d, name='%s'}", id, name);
-//    }
-
 
 }

@@ -53,10 +53,6 @@ public class TrackService {
         return trackRepo.findAll();
     }
 
-    //TODO: getAllTracksByQueryParams
-
-    //TODO: getArtistsByTrack
-
     public boolean deleteTrack(int id) {
         Track track = trackRepo.findById(id).orElse(null);
         if (track != null) {
@@ -97,9 +93,6 @@ public class TrackService {
         return null;
     }
 
-    //    public Track getArtistsByTrack(int id) {
-//        return trackRepo.findById(id).orElse(null);
-//    }
     public List<Track> getTracksByMediaType(MediaType mediaType) {
         List<Track> trackList = trackRepo.getTracksByMediaType(mediaType.ordinal());
         trackList.forEach(fe -> {

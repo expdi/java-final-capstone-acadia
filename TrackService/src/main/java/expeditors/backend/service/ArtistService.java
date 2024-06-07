@@ -65,24 +65,6 @@ public class ArtistService {
         return artistRepo.findAllWithTracks();
     }
 
-//    public List<Artist> getAllArtistsByQueryParams(Map<String, String> queryParams) {
-//        Predicate<Artist> finalPred = null;
-//        for(var entry : queryParams.entrySet()) {
-//            var key = entry.getKey();
-//            var value = entry.getValue();
-//            if (key.equals("name")) {
-//                Predicate<Artist> tmp = (a) -> a.getName().equals(value);
-//                finalPred = finalPred == null ? tmp : finalPred.or(tmp);
-//            }
-//        }
-//        finalPred = finalPred != null ? finalPred : (t) -> true;
-//        List<Artist> result = getAllArtists().stream()
-//                .filter(finalPred)
-//                .toList();
-//
-//        return result;
-//    }
-
     public List<Track> getTrackByArtist(String name) {
         return artistRepo.getTrackByArtist(name);
     }

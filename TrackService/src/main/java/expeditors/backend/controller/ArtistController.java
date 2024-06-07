@@ -104,27 +104,4 @@ public class ArtistController {
         return artists;
     }
 
-    //    @GetMapping("/artist/{id}/tracks")
-//    public ResponseEntity<?> getArtists(@PathVariable("id") int id){
-//        //do
-//        List<Track> tracks = artistService.getTracksByArtist(id);
-//        if (tracks == null) {
-//            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
-//        }
-//        return ResponseEntity.ok(tracks);
-//    }
-
-    //Sean's code
-    /*
-    public ResponseEntity<?> insertArtist(@RequestBody Artist artist){
-        Artist newArtist = artistService.addArtist(artist);
-        if (newArtist != null) {
-            URI newResource = uriCreator.getURI(newArtist.getId());
-            return ResponseEntity.created(newResource).build();
-        } else {
-            // If the adopter was not added (for example, if it already exists), return HTTP status 409 Conflict
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-    */
 }
