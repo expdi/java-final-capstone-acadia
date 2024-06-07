@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -325,10 +326,7 @@ class TrackControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newTrack);
-//        ResultActions actions = mockMvc
-//                .perform(put("/api/track", newTrack)
-//                        .accept(MediaType.APPLICATION_JSON));
-        ResultActions putActions = mockMvc.perform(put("/api/track")
+        ResultActions putActions = mockMvc.perform(put("/api/track").with(httpBasic("admin", "password"))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString));

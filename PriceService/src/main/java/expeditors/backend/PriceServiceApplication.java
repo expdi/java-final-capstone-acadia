@@ -20,6 +20,7 @@ public class PriceServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(PriceServiceApplication.class, args);
     }
+
     @Bean
     public ServletWebServerFactory servletContainer() {
         // Enable SSL Trafic
@@ -49,7 +50,7 @@ public class PriceServiceApplication {
     private Connector httpToHttpsRedirectConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(10001);
+        connector.setPort(10005);
         connector.setSecure(false);
         connector.setRedirectPort(8443);
         return connector;
