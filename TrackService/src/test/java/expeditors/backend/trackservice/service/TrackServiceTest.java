@@ -33,7 +33,7 @@ public class TrackServiceTest {
         track1.setMediaType(1);
         trackService.addTrack(track1);
         assertEquals(3, trackService.getAllTracks().size());
-        assertEquals("Money",trackService.getTrack(3).getTitle());
+        assertEquals("Money",trackService.getTrack(track1.getId()).getTitle());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class TrackServiceTest {
         track1.setTitle("Another Brick on the Wall");
         trackService.updateTrack(track1);
         assertEquals(2, trackService.getAllTracks().size());
-        assertEquals("Another Brick on the Wall",trackService.getTrack(2).getTitle());
+        assertEquals("Another Brick on the Wall",trackService.getTrack(track1.getId()).getTitle());
     }
 
     @Test
