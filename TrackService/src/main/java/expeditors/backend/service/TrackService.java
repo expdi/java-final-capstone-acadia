@@ -41,7 +41,7 @@ public class TrackService {
     }
 
     public Track getTrack(int id) {
-        Track track = trackRepo.findById(id).orElse(new Track());
+        Track track = trackRepo.findById(id).orElse(null);
         if (track != null) {
             track.setMediaTypeEnum(MediaType.values()[track.getMediaType()]);
             priceProvider.addPriceToTrack(track);

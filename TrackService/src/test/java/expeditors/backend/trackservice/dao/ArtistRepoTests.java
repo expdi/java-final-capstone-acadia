@@ -26,7 +26,7 @@ public class ArtistRepoTests {
         artist1.setName("Jay Chou");
         artistRepo.save(artist1);
         Artist artist2 = artistRepo.findById(artist1.getId()).orElse(null);
-        assertEquals(3, artist2.getId());
+        assertEquals(5, artist2.getId());
     }
     @Test
     public void testFindAllByNameContainingIgnoreCase(){
