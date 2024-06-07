@@ -1,24 +1,38 @@
 package expeditors.backend.service;
 
 import expeditors.backend.dao.ArtistRepo;
+import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
+import expeditors.backend.domain.MediaType;
 import expeditors.backend.domain.Track;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 @Service
 @Transactional
 public class ArtistService {
     @Autowired
     private ArtistRepo artistRepo;
+    @Autowired
+    private TrackRepo tracksRepo;
 
-    public Artist addArtist(Artist artist){
-        return artistRepo.save(artist);
+    public Artist addArtist(Artist artist) {
+        Artist artistSaved = artistRepo.save(artist);
+
+        artistSaved.getTracks().forEach(track -> {
+            Track track1 = tracksRepo.findById(track.getId()).get();
+            track.setTitle(track1.getTitle());
+            track.setAlbum(track1.getAlbum());
+            track.setIssueDate(track1.getIssueDate());
+            track.setDuration(track1.getDuration());
+            track.setMediaType(track1.getMediaType());
+            track.setPrice(track1.getPrice());
+            track.setMediaTypeEnum(MediaType.values()[track1.getMediaType()]);
+        });
+        return artistSaved;
     }
 
     public boolean deleteArtist(int id) {
@@ -39,14 +53,15 @@ public class ArtistService {
         return false;
     }
 
-    public Artist getArtist(int id){
+    public Artist getArtist(int id) {
         return artistRepo.findById(id).orElse(null);
     }
 
-    public List<Artist> getArtistByName(String name){
+    public List<Artist> getArtistByName(String name) {
         return artistRepo.findArtistByNameContainingIgnoreCase(name);
     }
-    public List<Artist> getAllArtists(){
+
+    public List<Artist> getAllArtists() {
         return artistRepo.findAllWithTracks();
     }
 
@@ -68,15 +83,9 @@ public class ArtistService {
 //        return result;
 //    }
 
-    public List<Track> getTrackByArtist(String name){
-        return  artistRepo.getTrackByArtist(name);
+    public List<Track> getTrackByArtist(String name) {
+        return artistRepo.getTrackByArtist(name);
     }
-
-
-
-
-
-
 
 
 }

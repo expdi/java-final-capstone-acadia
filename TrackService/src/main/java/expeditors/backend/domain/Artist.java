@@ -1,6 +1,5 @@
 package expeditors.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,9 +23,10 @@ public class Artist {
     private String name;
 
     //Sean's code
-    @ManyToMany(mappedBy = "artists", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    @Getter(onMethod_ = @__(@JsonIgnore))
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @Setter(onMethod_ = @__(@JsonProperty))
+    @JoinTable(name = "Artist_Track", joinColumns = @JoinColumn(name = "artist_id"), foreignKey = @ForeignKey(name = "fk_artist_track_artist"),
+            inverseJoinColumns = @JoinColumn(name = "track_id"), inverseForeignKey = @ForeignKey(name = "fk_artist_track_track"))
     //@JsonProperty(access = Access.WRITE_ONLY)
     private Set<Track> tracks = new HashSet<>();
 

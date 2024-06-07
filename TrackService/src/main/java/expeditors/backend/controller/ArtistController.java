@@ -4,15 +4,15 @@ import expeditors.backend.dao.ArtistRepo;
 import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.Track;
-import expeditors.backend.utils.UriCreator;
 import expeditors.backend.service.ArtistService;
+import expeditors.backend.utils.UriCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/artist")
@@ -34,70 +34,35 @@ public class ArtistController {
     @PostMapping("/createArtist")
     //Vincent's code
     public ResponseEntity<?> createArtist(@RequestBody Artist entity) {
-        try{
-            //System.out.println("\nCreate a new Artist." + "\n");
+        try {
 
-            // Create a new artist
-            Artist artist = new Artist(entity.getName());
-
-            // Save the artist
-            //artist = artistRepo.save(artist);
-            artist = artistService.addArtist(artist);
+            Artist artist = artistService.addArtist(entity);
             URI newResource = uriCreator.getURI(artist.getId());
             return ResponseEntity.created(newResource).body(artist);
 
-            //System.out.println("\nSaved artist :: " + artist + "\n");
-            //return "Artist saved!!!";
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error:" + e.getCause().getMessage());
         }
 
     }
 
-    @PostMapping("createArtistForTrack/{trackId}")
-    public String createArtistForTrack(@RequestBody Artist entity, @PathVariable(name = "trackId") Integer trackId) {
-        //Create a new artist
-        Artist artist = new Artist(entity.getName());
-
-        //Save the artist
-        artist = artistRepo.save(artist);
-        System.out.println("\nSaved artist :: " + artist + "\n");
-
-        //Get the track based on track id in the url
-        Track track = this.trackRepo.getById(Integer.valueOf(trackId));
-        System.out.println("\nTrack details :: " + track.toString() + "\n");
-
-        //Create Artist set
-        Set<Artist> artists = new HashSet<>();
-        artists.add(artist);
-
-        //Assign Track to Artist
-        track.setArtists(artists);
-
-        //Save Track
-        track = trackRepo.save(track);
-
-        System.out.println("\nArtist assigned to the Track." + "\n");
-
-        return "Artist saved!!!";
-    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteArtist(@PathVariable("id") int id){
+    public ResponseEntity<?> deleteArtist(@PathVariable("id") int id) {
         boolean result = artistService.deleteArtist(id);
-        if(!result){
+        if (!result) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No artist with id: " + id);
         }
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/")
-    public ResponseEntity<?> updateArtist(@RequestBody Artist artist){
+    public ResponseEntity<?> updateArtist(@RequestBody Artist artist) {
         boolean result = artistService.updateArtist(artist);
-        if (artist.getName() == null){
+        if (artist.getName() == null) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Artist needs at least a title");
         }
-        if(!result) {
+        if (!result) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No artist with id: " + artist.getId());
         }
@@ -106,13 +71,14 @@ public class ArtistController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getArtistById(@PathVariable("id") int id){
+    public ResponseEntity<?> getArtistById(@PathVariable("id") int id) {
         Artist artist = artistService.getArtist(id);
         if (artist == null) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("No artist with id: " + id);
         }
         return ResponseEntity.ok(artist);
     }
+
     @GetMapping("/getArtistByName/{name}")
     public ResponseEntity<?> getArtistByName(@PathVariable("name") String name) {
         List<Artist> artistList = artistService.getArtistByName(name);

@@ -1,5 +1,6 @@
 package expeditors.backend.service;
 
+import expeditors.backend.dao.ArtistRepo;
 import expeditors.backend.dao.TrackRepo;
 import expeditors.backend.domain.Artist;
 import expeditors.backend.domain.MediaType;
@@ -22,22 +23,25 @@ public class TrackService {
 
     @Autowired
     private TrackRepo trackRepo;
+    @Autowired
+    private ArtistRepo artistRepo;
 
     @Autowired
     private PriceProvider priceProvider;
 
     public Track addTrack(Track track) {
+        Track savedTracks = trackRepo.save(track);
 
-//        long time = track.getDurationAux().getSeconds();
-//        track.setDuration((double) time);
-//        if (track.getMediaTypeEnum() != null) {
-//            track.setMediaType(track.getMediaTypeEnum().ordinal());
-//        }
-        return trackRepo.save(track);
+        savedTracks.getArtists().forEach(artist -> {
+            Artist artist1 = artistRepo.findById(artist.getId()).get();
+            artist.setName(artist1.getName());
+
+        });
+        return savedTracks;
     }
 
     public Track getTrack(int id) {
-        Track track = trackRepo.findById(id).orElse(null);
+        Track track = trackRepo.findById(id).orElse(new Track());
         if (track != null) {
             track.setMediaTypeEnum(MediaType.values()[track.getMediaType()]);
             priceProvider.addPriceToTrack(track);
@@ -114,6 +118,14 @@ public class TrackService {
             case Equal ->
                     trackRepo.findAll().stream().filter(f -> Time.valueOf(formatDuration(f.getDuration())).equals(Time.valueOf(formatDuration(duration)))).collect(Collectors.toList());
         };
+    }
+
+    public TrackRepo getTrack() {
+        return trackRepo;
+    }
+
+    public void setTrack(TrackRepo trackRepo) {
+        this.trackRepo = trackRepo;
     }
 
     public static String formatDuration(Duration duration) {
